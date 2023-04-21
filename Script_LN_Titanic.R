@@ -11,9 +11,10 @@ url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/mai
 url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv?token=GHSAT0AAAAAACBE3PV3K5V7XFZRNFSKS6QMZB2HHAQ"
 
 #load Dataset
-titanic <- read.csv(url)
+titanic <- read.csv(url_Titanic)
 rms_Lusitania <- read.csv(url_RMS_Lusitania)
 
+#Test
 
 #Show first rows of dataset Titanic to check
 head(titanic)

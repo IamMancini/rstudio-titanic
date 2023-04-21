@@ -14,7 +14,7 @@ url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titan
 titanic <- read.csv(url_Titanic)
 rms_Lusitania <- read.csv(url_RMS_Lusitania)
 
-#Test
+#Testt
 
 #Show first rows of dataset Titanic to check
 head(titanic)

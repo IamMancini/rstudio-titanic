@@ -28,4 +28,9 @@ summary(titanic)
 #summary of dataset Lusitania
 summary(rms_Lusitania)
 
+#Start Data-Cleaning:
+
+
+
+
 

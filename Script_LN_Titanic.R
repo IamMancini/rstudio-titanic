@@ -101,7 +101,7 @@ show(lusitania)
 #save changes from lusitania
 write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
 
-#-------------
+#-------------test
 
 #Change Name in Titanic to Family name and first name
 

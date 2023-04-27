@@ -59,4 +59,8 @@ titanic <- titanic %>%
          `first_name` = str_trim(str_split(Name, ",")[[1]][2]))
 write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
 
-names(titanic)
+#Delete the column Name in Titanic because its unnecessary
+titanic <- select(titanic, -Name)
+write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
+
+

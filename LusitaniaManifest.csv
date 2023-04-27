@@ -1,4 +1,4 @@
-,Family name,Title,Personal name,Fate,Age,Department/Class,Passenger/Crew,Citizenship,Position,Status,City,Lifeboat,Rescue Vessel,Adult/Minor,Sex
+PassengerId,Family name,Title,Personal name,Fate,Age,Department/Class,Passenger/Crew,Citizenship,Position,Status,City,Lifeboat,Rescue Vessel,Adult/Minor,Sex
 0,CAMERON,Mr.,Charles W.,Lost,38.0,Band,Crew,British,,,,,,Adult,Male
 1,CARR-JONES,Mr.,E.,Lost,37.0,Band,Crew,British,,,,,,Adult,Male
 2,DRAKEFORD,Mr.,Edward,Saved,30.0,Band,Crew,British,Violin,,,,,Adult,Male

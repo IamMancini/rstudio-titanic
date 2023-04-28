@@ -8,22 +8,10 @@ library(ggplot2)
 library(stringr)
 
 #Create URL for dataset
-#Alessio
-url_Titanic <- "C:/Users/aless/DASB/rstudio-titanic/train.csv"
-url_RMS_Lusitania <- "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv"
+url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
+url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
 
-#Chris
-url_Titanic <- 
-url_RMS_Lusitania <- 
-  
-#Ramon
-url_Titanic <- 
-url_RMS_Lusitania <- 
 
-#Driton
-url_Titanic <- 
-url_RMS_Lusitania <- 
-  
 
 #load Dataset
 titanic <- read.csv(url_Titanic)

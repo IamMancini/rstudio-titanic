@@ -12,6 +12,11 @@ url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/mai
 url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
 
 
+#Data-Cleaning
+url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
+url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
+
+
 
 #load Dataset
 titanic <- read.csv(url_Titanic)
@@ -126,3 +131,23 @@ write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.n
 #Change PassengerId from 0 to 1 in Lusitania
 lusitania$PassengerId <- lusitania$PassengerId - min(lusitania$PassengerId) + 1
 write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+
+
+#Change the name of the column from Department.Class to Ticket_class in Dataset Lusitania
+colnames(lusitania)[colnames(lusitania) == "Department.Class"] <- "Ticket_class"
+
+write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+
+
+#Change the name of the column from Pclass	to Ticket_class in Dataset Titanic
+colnames(titanic)[colnames(titanic) == "Pclass"] <- "Ticket_class"
+write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
+
+#In the Lusitania Dataset the data is going to be renamed, so its the same as the ones in titanic. Saloon is going to be 1 / Second is going to be 2 / Thrid is going to be 3 / The rest of the Ticket classes are going to be 4
+lusitania$Ticket_class <- gsub("Saloon", "1", lusitania$Ticket_class)
+lusitania$Ticket_class <- gsub("Second", "2", lusitania$Ticket_class)
+lusitania$Ticket_class <- gsub("Third", "3", lusitania$Ticket_class)
+lusitania$Ticket_class <- gsub("Victualling|Engineering|Deck|Band", "4", lusitania$Ticket_class)
+write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+
+

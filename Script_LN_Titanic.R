@@ -103,8 +103,29 @@ write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv"
 
 #-------------test
 
-#Change Name in Titanic to Family name and first name
+
+#Seperate the name in Titanic
+titanic <- titanic %>%
+  separate(Name, into = c("Family_name", "first_name"), sep = ", ") 
+
+write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
 
 
-#Delete the column Name in Titanic because its unnecessary
+#Write the data in the column "Sex" lower case
+lusitania$Sex <- tolower(lusitania$Sex)
 
+write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+
+#Write the first letter in Family_name capital and the rest in lower Cases
+lusitania$Family_name <- sapply(lusitania$Family_name, function(x) {
+  paste(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))), sep="")
+})
+
+write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+
+
+#Change abbreviation in the column "Embarked"
+titanic$Embarked[titanic$Embarked == "C"] <- "Cherbourg"
+titanic$Embarked[titanic$Embarked == "Q"] <- "Queenstown"
+titanic$Embarked[titanic$Embarked == "S"] <- "Southampton"
+write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)

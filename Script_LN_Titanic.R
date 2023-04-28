@@ -135,4 +135,6 @@ write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.n
 titanic$first_name <- gsub("\\w+\\.", "", titanic$first_name)
 write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
 
-
+#Change PassengerId from 0 to 1 in Lusitania
+lusitania$PassengerId <- lusitania$PassengerId - min(lusitania$PassengerId) + 1
+write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)

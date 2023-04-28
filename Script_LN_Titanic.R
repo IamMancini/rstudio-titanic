@@ -129,3 +129,10 @@ titanic$Embarked[titanic$Embarked == "C"] <- "Cherbourg"
 titanic$Embarked[titanic$Embarked == "Q"] <- "Queenstown"
 titanic$Embarked[titanic$Embarked == "S"] <- "Southampton"
 write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
+
+
+#Delete the title of a person from first_name in Titanic
+titanic$first_name <- gsub("\\w+\\.", "", titanic$first_name)
+write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
+
+

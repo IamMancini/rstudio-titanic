@@ -143,7 +143,7 @@ write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv"
 colnames(titanic)[colnames(titanic) == "Pclass"] <- "Ticket_class"
 write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
 
-#In the Lusitania Dataset the data is going to be renamed, so its the same as the ones in titanic. Saloon is going to be 1 / Second is going to be 2 / Thrid is going to be 3 / The rest of the Ticket classes are going to be 4
+#In the Lusitania Dataset the data is going to be renamed, so that they match the ticket class from titanic. Saloon is going to be 1 / Second is going to be 2 / Thrid is going to be 3 / The rest of the Ticket classes are going to be 4
 lusitania$Ticket_class <- gsub("Saloon", "1", lusitania$Ticket_class)
 lusitania$Ticket_class <- gsub("Second", "2", lusitania$Ticket_class)
 lusitania$Ticket_class <- gsub("Third", "3", lusitania$Ticket_class)

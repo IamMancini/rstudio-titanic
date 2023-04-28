@@ -1,4 +1,4 @@
-"PassengerId","Family_name","first_name","Sex","Survived","Age","Department.Class","Passenger.Crew","Citizenship","Position","Status","City","Lifeboat","Rescue.Vessel","Adult.Minor"
+"PassengerId","Family_name","first_name","Sex","Survived","Age","Ticket_class","Passenger.Crew","Citizenship","Position","Status","City","Lifeboat","Rescue.Vessel","Adult.Minor"
 1,"Cameron","Charles W.","male","no",38,"Band","Crew","British","","","","","","Adult"
 2,"Carr-jones","E.","male","no",37,"Band","Crew","British","","","","","","Adult"
 3,"Drakeford","Edward","male","yes",30,"Band","Crew","British","Violin","","","","","Adult"

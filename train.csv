@@ -1,4 +1,4 @@
-"PassengerId","Family_name","first_name","Sex","Survived","Age","Pclass","SibSp","Parch","Ticket","Fare","Cabin"
+"PassengerId","Family_name","first_name","Sex","Survived","Age","Ticket_class","SibSp","Parch","Ticket","Fare","Cabin"
 1,"Braund"," Owen Harris","male","no",22,3,1,0,"A/5 21171",7.25,""
 2,"Cumings"," John Bradley (Florence Briggs Thayer)","female","yes",38,1,1,0,"PC 17599",71.2833,"C85"
 3,"Heikkinen"," Laina","female","yes",26,3,0,0,"STON/O2. 3101282",7.925,""

@@ -12,11 +12,6 @@ url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/mai
 url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
 
 
-#Data-Cleaning
-url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
-url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
-
-
 
 #load Dataset
 titanic <- read.csv(url_Titanic)
@@ -149,5 +144,46 @@ lusitania$Ticket_class <- gsub("Second", "2", lusitania$Ticket_class)
 lusitania$Ticket_class <- gsub("Third", "3", lusitania$Ticket_class)
 lusitania$Ticket_class <- gsub("Victualling|Engineering|Deck|Band", "4", lusitania$Ticket_class)
 write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+
+#------------------------------------------------------------------------------------------------------
+
+#Hypothesis 1 - Survival rate in relation to gender and class:
+
+
+
+
+
+
+#------------------------------------------------------------------------------------------------------
+
+#Hypothesis 2 - :
+
+
+
+
+
+
+
+#------------------------------------------------------------------------------------------------------
+
+#Hypothesis 3 - :
+
+
+
+
+
+
+
+
+
+#------------------------------------------------------------------------------------------------------
+
+#Hypothesis 4 - :
+
+
+
+
+
+
 
 

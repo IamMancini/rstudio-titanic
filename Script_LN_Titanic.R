@@ -12,7 +12,6 @@ url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/mai
 url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
 
 
-
 #load Dataset
 titanic <- read.csv(url_Titanic)
 lusitania <- read.csv(url_RMS_Lusitania)
@@ -89,7 +88,6 @@ show(lusitania)
 #save changes from lusitania
 write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
 
-#-------------test
 
 
 #Seperate the name in Titanic
@@ -150,6 +148,91 @@ write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv"
 #Hypothesis 1 - Survival rate in relation to gender and class:
 
 
+#1. create a subset for titanic and lusitania dataset and only inlclude the variables of interest
+
+titanic_subset <- titanic[, c("Sex", "Survived", "Ticket_class")]
+lusitania_subset <- lusitania[, c("Sex", "Survived", "Ticket_class")]
+
+
+
+#2. Calculate survival rates for each combination of gender and passenger class
+
+
+#Summary statistics for titanic
+titanic_summary <- titanic %>%
+  group_by(Ticket_class, Sex, Survived) %>%
+  summarize(n = n()) %>%
+  mutate(pct_survived = n / sum(n) * 100)
+
+#Summary statistics for Lusitania
+lusitania_summary <- lusitania %>%
+  group_by(Ticket_class, Sex, Survived) %>%
+  summarize(n = n()) %>%
+  mutate(pct_survived = n / sum(n) * 100)
+
+
+
+# Convert Ticket_class to a character variable in titanic_summary
+titanic_summary$Ticket_class <- as.character(titanic_summary$Ticket_class)
+
+# Combine titanic_summary and lusitania_summary
+summary_combined <- bind_rows(titanic_summary, lusitania_summary, .id = "Ship")
+
+# Convert Ticket_class back to an integer variable
+summary_combined$Ticket_class <- as.integer(summary_combined$Ticket_class)
+
+
+
+# Combine the datasets and remove the "stowaway"
+titanic$Ticket_class <- as.character(titanic$Ticket_class)
+lusitania$Ticket_class <- as.character(lusitania$Ticket_class)
+
+combined <- bind_rows(titanic %>% mutate(dataset = "Titanic"), 
+                      lusitania %>% mutate(dataset = "Lusitania"))
+
+combined_summary <- combined %>%
+  filter(!Ticket_class %in% "Stowaway") %>%
+  group_by(dataset, Sex, Ticket_class, Survived) %>%
+  summarize(n = n()) %>%
+  mutate(pct_survived = n / sum(n) * 100)
+
+#3. Visualize survival rates with bar-chart
+ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+            position = position_dodge(width = 0.9), vjust = -1.0) +
+  labs(title = "Survival rate of passengers on Titanic and Lusitania",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom")
+
+#Bar-chart only with number of passengers 
+ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = n),
+            position = position_dodge(width = 0.9), vjust = -1.0) +
+  ylim(0, 600) +
+  labs(title = "Survival rate of passengers on Titanic and Lusitania",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom")
+
+#Bar-chart only in percentage // Problem -> y-Axis doesnt match that the data is shown in percentage and some labels arent visible
+ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(round(pct_survived), "%")),
+            position = position_dodge(width = 0.9), vjust = -1.0) +
+  ylim(0, 600) +
+  labs(title = "Survival rate of passengers on Titanic and Lusitania",
+       x = "Sex", y = "Percentage of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom")
 
 
 

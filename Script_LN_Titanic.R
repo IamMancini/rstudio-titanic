@@ -237,6 +237,93 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
 
 
 
+#1. Create a new data frame with the total number of passengers for each ship
+ship_totals <- rbind(
+  titanic %>% summarise(dataset = "Titanic", total_passengers = n()),
+  lusitania %>% summarise(dataset = "Lusitania", total_passengers = n())
+)
+
+# Create a bar chart of total passengers by ship
+ggplot(ship_totals, aes(x = dataset, y = total_passengers, fill = dataset)) +
+  geom_col() +
+  labs(title = "Total passengers by ship",
+       x = "Ship", y = "Total passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "none") +
+  scale_fill_manual(values = c("#0072b2", "#d55e00")) +
+  geom_text(aes(label = total_passengers), position = position_stack(vjust = 0.5),
+            color = "white", fontface = "bold", size = 3.5)
+
+
+
+
+#2a. Create a grouped bar chart to compare the number of survivors and non-survivors by gender and dataset
+
+grouped_summary <- titanic %>%
+  group_by(Sex, Survived) %>%
+  summarize(count = n()) %>%
+  mutate(dataset = "Titanic") %>%
+  bind_rows(lusitania %>%
+              group_by(Sex, Survived) %>%
+              summarize(count = n()) %>%
+              mutate(dataset = "Lusitania"))
+
+ggplot(grouped_summary, aes(x = dataset, y = count, fill = Survived)) +
+  geom_col(position = "dodge") +
+  geom_text(aes(label = count), position = position_dodge(width = 0.9), 
+            vjust = -0.5) +
+  facet_grid(rows = vars(Sex)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived",
+                    labels = c("No", "Yes")) +
+  labs(title = "Survival of passengers on Titanic and Lusitania by gender",
+       x = "Dataset", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom")
+
+#2b. Pie-chart for the same plot
+
+
+
+#3. Differences between the genders on both ships and how it effected their survival rate
+
+# Calculate the survival rate by gender for the Titanic dataset
+titanic_summary <- titanic %>%
+  group_by(Sex, Survived) %>%
+  summarise(n = n()) %>%
+  mutate(pct_survived = n/sum(n) * 100)
+
+# Calculate the survival rate by gender for the Lusitania dataset
+lusitania_summary <- lusitania %>%
+  group_by(Sex, Survived) %>%
+  summarise(n = n()) %>%
+  mutate(pct_survived = n/sum(n) * 100)
+
+# Combine the summaries into one dataset
+combined_summary <- bind_rows(
+  mutate(titanic_summary, dataset = "Titanic"),
+  mutate(lusitania_summary, dataset = "Lusitania")
+)
+
+ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "stack", stat = "identity") +
+  facet_grid(rows = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(round(pct_survived), "%")),
+            position = position_stack(vjust = 0.5)) +
+  labs(title = "Survival rate of passengers on Titanic and Lusitania by gender",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom")
+
+
+
+
+
+#Differences between the passenger class on both ships and how it effected their survival rate
+
+
+
+
 #------------------------------------------------------------------------------------------------------
 
 #Hypothesis 2 - :

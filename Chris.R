@@ -6,6 +6,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(stringr)
+library(tidyverse)
 
 #Create URL for dataset
 url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
@@ -100,4 +101,34 @@ ggplot(lusitania_non_survivors, aes(x = Age)) +
   ggtitle("Age Distribution of Lusitania Non-Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
+
+#T-Test
+# Filter out missing age values
+titanic_age <- titanic %>% filter(!is.na(Age))
+
+# Split the dataset by survival status
+survivors <- titanic_age %>% filter(Survived == "yes")
+non_survivors <- titanic_age %>% filter(Survived == "no")
+
+# Perform t-test
+t_test_age <- t.test(survivors$Age, non_survivors$Age, var.equal = TRUE)
+
+# Print t-test results
+print(t_test_age)
+
+
+
+
+# Filter out missing age values
+lusitania_age <- lusitania %>% filter(!is.na(Age))
+
+# Split the dataset by survival status
+survivors <- lusitania_age %>% filter(Survived == "yes")
+non_survivors <- lusitania_age %>% filter(Survived == "no")
+
+# Perform t-test
+t_test_age <- t.test(survivors$Age, non_survivors$Age, var.equal = TRUE)
+
+# Print t-test results
+print(t_test_age)
 

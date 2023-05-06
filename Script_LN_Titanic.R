@@ -8,8 +8,8 @@ library(ggplot2)
 library(stringr)
 
 #Create URL for dataset
-url_Titanic <- "C:/Users/aless/DASB/rstudio-titanic/test_dataCleaning/train.csv"
-url_RMS_Lusitania <- "C:/Users/aless/DASB/rstudio-titanic/test_dataCleaning/LusitaniaManifest.csv"
+url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
+url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
 
 #load Dataset
 original_titanic <- read.csv(url_Titanic)
@@ -50,7 +50,6 @@ clean_data_titanic <- function(original_titanic) {
 }
 
 titanic <- clean_data_titanic(original_titanic)
-
 
 
 

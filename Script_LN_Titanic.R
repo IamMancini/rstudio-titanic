@@ -8,140 +8,124 @@ library(ggplot2)
 library(stringr)
 
 #Create URL for dataset
-url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
-url_RMS_Lusitania <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/LusitaniaManifest.csv"
-
+url_Titanic <- "C:/Users/aless/DASB/rstudio-titanic/test_dataCleaning/train.csv"
+url_RMS_Lusitania <- "C:/Users/aless/DASB/rstudio-titanic/test_dataCleaning/LusitaniaManifest.csv"
 
 #load Dataset
-titanic <- read.csv(url_Titanic)
-lusitania <- read.csv(url_RMS_Lusitania)
-
-#Testtt
-
-#Show first rows of dataset Titanic to check
-head(titanic)
-
-#Show first rows of dataset Lusitania to check
-head(lusitania)
-
-#summary of dataset Titanic
-summary(titanic)
-
-#summary of dataset Lusitania
-summary(lusitania)
-
-#Start Data-Cleaning:
-#What is the sturcture of the dataset for both datasets
-
-names(titanic)
-names(lusitania)
-
-
-#Change columne 0 from Lusitania to be the same as titanic "PersonalId"
-#Changes have been made directly inside the csv
+original_titanic <- read.csv(url_Titanic)
+original_lusitania <- read.csv(url_RMS_Lusitania)
 
 
 
+clean_data_titanic <- function(original_titanic) {
+  
+  #Change sequence in Titanic
+  original_titanic <- original_titanic %>%
+    select(PassengerId, Name, Sex, Survived, everything())
+  
+  
+  #Change the data from Titanic in Column "survived" to [yes = survived] and [no = not survived]
+  original_titanic$Survived <- ifelse(original_titanic$Survived == 0, "no", "yes")
+  
+  
+  #Seperate the name in Titanic
+  original_titanic <- original_titanic %>%
+    separate(Name, into = c("Family_name", "first_name"), sep = ", ") 
+  
+  
+  #Change abbreviation in the column "Embarked"
+  original_titanic$Embarked[original_titanic$Embarked == "C"] <- "Cherbourg"
+  original_titanic$Embarked[original_titanic$Embarked == "Q"] <- "Queenstown"
+  original_titanic$Embarked[original_titanic$Embarked == "S"] <- "Southampton"
+  
+  
+  #Delete the title of a person from first_name in Titanic
+  original_titanic$first_name <- gsub("\\w+\\.", "", original_titanic$first_name)
+  
+  
+  #Change the name of the column from Pclass	to Ticket_class in Dataset Titanic
+  colnames(original_titanic)[colnames(original_titanic) == "Pclass"] <- "Ticket_class"
+  
+  return(original_titanic)
+}
 
-
-#rename "Family name" to "Family_name" in Lusitania
-lusitania <- lusitania %>% rename(Family_name = `Family.name`)
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-
-#rename Personal name to first_name in Lusitania
-lusitania <- rename(lusitania, first_name = Personal.name)
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-
-#remove Title from Lusitania
-lusitania <- lusitania %>% 
-  select(-Title)
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-
-#Change Column for "Sex" from Lusitania
-lusitania <- lusitania %>%
-  select(PassengerId, Family_name, first_name, Sex, everything())
-
-
-#Change sequence
-titanic <- titanic %>%
-  select(PassengerId, Name, Sex, Survived, everything())
-
-write.csv(titanic, "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
-
-#Change the data from Titanic in Column "survived" to [yes = survived] and [no = not survived]
-titanic$Survived <- ifelse(titanic$Survived == 0, "no", "yes")
-write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
-
-#Change the name of the column "Fate" to "Survived" in Lusitania
-lusitania <- lusitania %>%
-  rename(Survived = Fate)
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-
-#Change the data from Lusitania in Column "Survival" to [yes =îf survived] and [no if not survived]
-lusitania$Survived <- ifelse(lusitania$Survived == "Lost", "no", "yes")
-
-show(lusitania)
-#save changes from lusitania
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+titanic <- clean_data_titanic(original_titanic)
 
 
 
-#Seperate the name in Titanic
-titanic <- titanic %>%
-  separate(Name, into = c("Family_name", "first_name"), sep = ", ") 
 
-write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
+#---------------------------------------------------------------------
+
+clean_data_lusitania <- function(original_lusitania) {
+  
+  #change the first column from Luistania to "PassengerId"
+  names(original_lusitania)[1] <- "PassengerId"
+  
+  
+  #rename "Family name" to "Family_name" in Lusitania
+  original_lusitania <- original_lusitania %>% 
+    rename(Family_name = `Family.name`)
+  
+  
+  #rename Personal name to first_name in Lusitania
+  original_lusitania <- rename(original_lusitania, first_name = Personal.name)
+  
+  
+  #remove Title from Lusitania
+  original_lusitania <- original_lusitania %>% 
+    select(-Title)
+  
+  
+  #Change Column for "Sex" from Lusitania
+  original_lusitania <- original_lusitania %>%
+    select(PassengerId, Family_name, first_name, Sex, everything())
+  
+  
+  #Change the name of the column "Fate" to "Survived" in Lusitania
+  original_lusitania <- original_lusitania %>%
+    rename(Survived = Fate)
+  
+  
+  #Change the data from Lusitania in Column "Survival" to [yes =îf survived] and [no if not survived]
+  original_lusitania$Survived <- ifelse(original_lusitania$Survived == "Lost", "no", "yes")
+  
+  
+  #Write the data in the column "Sex" lower case
+  original_lusitania$Sex <- tolower(original_lusitania$Sex)
+  
+  
+  #Write the first letter in Family_name capital and the rest in lower Cases
+  original_lusitania$Family_name <- sapply(original_lusitania$Family_name, function(x) {
+    paste(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))), sep="")
+  })
+  
+  
+  #Change PassengerId from 0 to 1 in Lusitania and the rest of the numbers in the column should increase by 1
+  original_lusitania$PassengerId <- original_lusitania$PassengerId - min(original_lusitania$PassengerId) + 1
+  
+  
+  #Change the name of the column from Department.Class to Ticket_class in Dataset Lusitania
+  colnames(original_lusitania)[colnames(original_lusitania) == "Department.Class"] <- "Ticket_class"
+  
+  
+  #In the Lusitania Dataset the data is going to be renamed, so that they match the ticket class from titanic. Saloon is going to be 1 / Second is going to be 2 / Thrid is going to be 3 / The rest of the Ticket classes are going to be 4
+  original_lusitania$Ticket_class <- gsub("Saloon", "1", original_lusitania$Ticket_class)
+  original_lusitania$Ticket_class <- gsub("Second", "2", original_lusitania$Ticket_class)
+  original_lusitania$Ticket_class <- gsub("Third", "3", original_lusitania$Ticket_class)
+  original_lusitania$Ticket_class <- gsub("Victualling|Engineering|Deck|Band", "4", original_lusitania$Ticket_class)
+  
+  
+  
+  #Delete stowaway from dataset Lusitiana, because they dont include any data or value for this project
+  original_lusitania <- filter(original_lusitania, Ticket_class != "Stowaway")
+  
+  return(original_lusitania)
+}
 
 
-#Write the data in the column "Sex" lower case
-lusitania$Sex <- tolower(lusitania$Sex)
-
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-#Write the first letter in Family_name capital and the rest in lower Cases
-lusitania$Family_name <- sapply(lusitania$Family_name, function(x) {
-  paste(toupper(substr(x, 1, 1)), tolower(substr(x, 2, nchar(x))), sep="")
-})
-
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
+lusitania <- clean_data_lusitania(original_lusitania)
 
 
-#Change abbreviation in the column "Embarked"
-titanic$Embarked[titanic$Embarked == "C"] <- "Cherbourg"
-titanic$Embarked[titanic$Embarked == "Q"] <- "Queenstown"
-titanic$Embarked[titanic$Embarked == "S"] <- "Southampton"
-write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
-
-
-#Delete the title of a person from first_name in Titanic
-titanic$first_name <- gsub("\\w+\\.", "", titanic$first_name)
-write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
-
-#Change PassengerId from 0 to 1 in Lusitania
-lusitania$PassengerId <- lusitania$PassengerId - min(lusitania$PassengerId) + 1
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-
-#Change the name of the column from Department.Class to Ticket_class in Dataset Lusitania
-colnames(lusitania)[colnames(lusitania) == "Department.Class"] <- "Ticket_class"
-
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
-
-
-#Change the name of the column from Pclass	to Ticket_class in Dataset Titanic
-colnames(titanic)[colnames(titanic) == "Pclass"] <- "Ticket_class"
-write.csv(titanic, file = "C:/Users/aless/DASB/rstudio-titanic/train.csv", row.names = FALSE)
-
-#In the Lusitania Dataset the data is going to be renamed, so that they match the ticket class from titanic. Saloon is going to be 1 / Second is going to be 2 / Thrid is going to be 3 / The rest of the Ticket classes are going to be 4
-lusitania$Ticket_class <- gsub("Saloon", "1", lusitania$Ticket_class)
-lusitania$Ticket_class <- gsub("Second", "2", lusitania$Ticket_class)
-lusitania$Ticket_class <- gsub("Third", "3", lusitania$Ticket_class)
-lusitania$Ticket_class <- gsub("Victualling|Engineering|Deck|Band", "4", lusitania$Ticket_class)
-write.csv(lusitania, "C:/Users/aless/DASB/rstudio-titanic/LusitaniaManifest.csv", row.names = FALSE)
 
 #------------------------------------------------------------------------------------------------------
 

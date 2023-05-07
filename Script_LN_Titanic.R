@@ -462,6 +462,46 @@ ggplot(survival_rates, aes(x = Ship, y = Survival_Rate, fill = Ship)) +
   xlab("Ship") +
   ylab("Survival Rate")
 
+# Calculate percentage of survivors and non-survivors
+titanic_survivors <- sum(titanic$Survived == "yes")
+titanic_non_survivors <- sum(titanic$Survived == "no")
+lusitania_survivors <- sum(lusitania$Survived == "yes")
+lusitania_non_survivors <- sum(lusitania$Survived == "no")
+
+titanic_survival_percent <- titanic_survivors / nrow(titanic) * 100
+titanic_non_survival_percent <- titanic_non_survivors / nrow(titanic) * 100
+lusitania_survival_percent <- lusitania_survivors / nrow(lusitania) * 100
+lusitania_non_survival_percent <- lusitania_non_survivors / nrow(lusitania) * 100
+# Print survival rates and percentages
+cat("Titanic survival rate:", titanic_survival_rate, "\n")
+cat("Titanic survivors:", titanic_survivors, "(", round(titanic_survival_percent, 2), "%)", "\n")
+cat("Titanic non-survivors:", titanic_non_survivors, "(", round(titanic_non_survival_percent, 2), "%)", "\n")
+
+cat("Lusitania survival rate:", lusitania_survival_rate, "\n")
+cat("Lusitania survivors:", lusitania_survivors, "(", round(lusitania_survival_percent, 2), "%)", "\n")
+cat("Lusitania non-survivors:", lusitania_non_survivors, "(", round(lusitania_non_survival_percent, 2), "%)", "\n")
+
+# Create a data frame with the survival data
+titanic_pie <- data.frame(Status = c("Survivors", "Non-survivors"), Percent = c(titanic_survival_percent, titanic_non_survival_percent))
+
+# Create a pie chart of the survival data
+ggplot(titanic_pie, aes(x = "", y = Percent, fill = Status)) + 
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0) +
+  ggtitle("Titanic Survival Status") +
+  scale_fill_manual(values = c("darkgreen", "darkred")) +
+  theme_void()
+
+# Create a data frame with the survival data
+lusitania_pie <- data.frame(Status = c("Survivors", "Non-survivors"), Percent = c(lusitania_survival_percent, lusitania_non_survival_percent))
+
+# Create a pie chart of the survival data
+ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) + 
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0) +
+  ggtitle("Lusitania Survival Status") +
+  scale_fill_manual(values = c("darkgreen", "darkred")) +
+  theme_void()
 
 
 

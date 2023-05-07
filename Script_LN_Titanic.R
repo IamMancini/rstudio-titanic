@@ -490,7 +490,8 @@ ggplot(titanic_pie, aes(x = "", y = Percent, fill = Status)) +
   coord_polar("y", start=0) +
   ggtitle("Titanic Survival Status") +
   scale_fill_manual(values = c("darkgreen", "darkred")) +
-  theme_void()
+  theme_void() +
+  geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
 # Create a data frame with the survival data
 lusitania_pie <- data.frame(Status = c("Survivors", "Non-survivors"), Percent = c(lusitania_survival_percent, lusitania_non_survival_percent))
@@ -501,7 +502,8 @@ ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) +
   coord_polar("y", start=0) +
   ggtitle("Lusitania Survival Status") +
   scale_fill_manual(values = c("darkgreen", "darkred")) +
-  theme_void()
+  theme_void() +
+  geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
 
 

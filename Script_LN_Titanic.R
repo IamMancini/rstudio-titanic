@@ -6,6 +6,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(stringr)
+library(tidyverse)
 
 #Create URL for dataset
 url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
@@ -323,6 +324,24 @@ ggplot(lusitania, aes(x = Age)) +
   labs(title = "Age Distribution of Passengers on the Lusitania",
        x = "Age (years)", y = "Count")
 
+# select only the relevant columns from the Titanic and Lusitania data frames
+titanic_selected <- titanic %>% select(Age)
+lusitania_selected <- lusitania %>% select(Age)
+
+# add a "Ship" column to each data frame
+titanic_selected$Ship <- "Titanic"
+lusitania_selected$Ship <- "Lusitania"
+
+# combine the two data frames using rbind()
+combined_data <- rbind(titanic_selected, lusitania_selected)
+
+# create a histogram of the combined age distribution
+ggplot(combined_data, aes(x = Age)) +
+  geom_histogram(binwidth = 5) +
+  facet_wrap(~Ship, ncol = 2) +
+  labs(title = "Age Distribution of Passengers on the Titanic and Lusitania",
+       x = "Age (years)", y = "Count")
+
 #Results show that there were more passengers in the middle age range (20-40) in both datasets.
 
 # bar chart of survival rate in titanic dataset
@@ -339,24 +358,28 @@ ggplot(lusitania, aes(x = Survived, fill = Survived)) +
        x = "Survived", y = "Count") +
   scale_fill_manual(values = c("no" = "red", "yes" = "green"))
 
-# scatterplot of age and survival rate in titanic dataset
-ggplot(titanic, aes(x = Age, y = factor(Survived), color = Survived)) +
-  geom_jitter(width = 0.5) +
-  labs(title = "Relationship between Age and Survival Rate on the Titanic",
-       x = "Age (years)", y = "Survived") +
-  scale_color_manual(values = c("no" = "red", "yes" = "green"))
+###############################################################################
 
-# scatterplot of age and survival rate in lusitania dataset
-ggplot(lusitania, aes(x = Age, y = factor(Survived), color = Survived)) +
-  geom_jitter(width = 0.5) +
-  labs(title = "Relationship between Age and Survival Rate on the Lusitania",
-       x = "Age (years)", y = "Survived") +
-  scale_color_manual(values = c("no" = "red", "yes" = "green"))
+# calculate survival rate for Titanic
+titanic_survival_rate <- round(mean(titanic$Survived == "yes") * 100, 2)
 
+# calculate survival rate for Lusitania
+lusitania_survival_rate <- round(mean(lusitania$Survived == "yes") * 100, 2)
 
+# print survival rates
+cat("Titanic Survival Rate: ", titanic_survival_rate, "%\n")
+cat("Lusitania Survival Rate: ", lusitania_survival_rate, "%\n")
 
+# create bar chart of survival rate for both ships
+ggplot(data.frame(Ship = c("Titanic", "Lusitania"),
+                  Survival_Rate = c(titanic_survival_rate, lusitania_survival_rate)), 
+       aes(x = Ship, y = Survival_Rate, fill = Ship)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Survival Rate Comparison between Titanic and Lusitania",
+       x = "", y = "Survival Rate (%)") +
+  scale_fill_manual(values = c("Titanic" = "red", "Lusitania" = "green"))
 
-
+###############################################################################
 
 # Titanic dataset
 titanic_survivors <- subset(titanic, Survived == "yes")
@@ -393,6 +416,8 @@ ggplot(lusitania_non_survivors, aes(x = Age)) +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
 
+###############################################################################
+
 #T-Test
 # Filter out missing age values
 titanic_age <- titanic %>% filter(!is.na(Age))
@@ -407,9 +432,6 @@ t_test_age <- t.test(survivors$Age, non_survivors$Age, var.equal = TRUE)
 # Print t-test results
 print(t_test_age)
 
-
-
-
 # Filter out missing age values
 lusitania_age <- lusitania %>% filter(!is.na(Age))
 
@@ -423,10 +445,36 @@ t_test_age <- t.test(survivors$Age, non_survivors$Age, var.equal = TRUE)
 # Print t-test results
 print(t_test_age)
 
+###############################################################################
 
+# create a new age group variable
+titanic <- titanic %>%
+  mutate(age_group = cut(Age, breaks = seq(0, 80, 10), labels = c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79")))
 
+lusitania <- lusitania %>%
+  mutate(age_group = cut(Age, breaks = seq(0, 80, 10), labels = c("0-9", "10-19", "20-29", "30-39", "40-49", "50-59", "60-69", "70-79")))
 
+# calculate survival rates by age group for both ships
+titanic_survival_rate_age <- titanic %>%
+  group_by(age_group) %>%
+  summarise(survival_rate = round(mean(Survived == "yes") * 100, 2))
 
+lusitania_survival_rate_age <- lusitania %>%
+  group_by(age_group) %>%
+  summarise(survival_rate = round(mean(Survived == "yes") * 100, 2))
+
+# combine the survival rate data for both ships
+combined_survival_rate_age <- bind_rows(
+  titanic_survival_rate_age %>% mutate(Ship = "Titanic"),
+  lusitania_survival_rate_age %>% mutate(Ship = "Lusitania")
+)
+
+# plot survival rate by age group for both ships
+ggplot(combined_survival_rate_age, aes(x = age_group, y = survival_rate, fill = Ship)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(title = "Survival Rate by Age Group Comparison between Titanic and Lusitania",
+       x = "Age Group", y = "Survival Rate (%)", fill = "Ship") +
+  theme(legend.position = "bottom")
 
 
 #------------------------------------------------------------------------------------------------------

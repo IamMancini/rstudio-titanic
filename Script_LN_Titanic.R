@@ -505,7 +505,70 @@ ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) +
   theme_void() +
   geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
+#------------------------------------------------------------
 
+# Create a function to assign group based on the first letter of family name
+assign_group <- function(name) {
+  first_letter <- substr(name, 1, 1)  # Get the first letter of the name
+  first_letter <- toupper(first_letter)  # Convert it to uppercase
+  
+  if (first_letter %in% c("A", "B", "C")) {
+    return(1)  # Group 1
+  } else if (first_letter %in% c("D", "E", "F")) {
+    return(2)  # Group 2
+  } else if (first_letter %in% c("G", "H", "I")) {
+    return(3)  # Group 3
+  } else if (first_letter %in% c("J", "K", "L")) {
+    return(4)  # Group 4
+  } else if (first_letter %in% c("M", "N", "O")) {
+    return(5)  # Group 5
+  } else if (first_letter %in% c("P", "Q", "R")) {
+    return(6)  # Group 6
+  } else if (first_letter %in% c("S", "T", "U")) {
+    return(7)  # Group 7
+  } else if (first_letter %in% c("V", "W", "X", "Y", "Z")) {
+    return(8)  # Group 8
+  } else {
+    return(NA)  # For names that don't fall into any group
+  }
+}
+
+
+# Apply the function to create a new column "Group" in Titanic
+titanic$Group <- sapply(titanic$Family_name, assign_group)
+
+# Create a new column "Survived_binary" and populate it with binary values based on "Survived" column for Titanic
+titanic$Survived_binary <- ifelse(titanic$Survived %in% c("yes"), 1, ifelse(titanic$Survived %in% c("no"), 0, NA))
+
+# Calculate survival rates by group for Titanic
+survival_rates1 <- aggregate(Survived_binary ~ Group, data = titanic, FUN = mean)
+
+# Create a vector of labels for each group
+group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, R", "S, T, U", "V, W, X, Y, Z")
+
+# Create a bar plot to visualize survival rates for Titanic
+ggplot(survival_rates1, aes(x = Group, y = Survived_binary)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(x = "Group", y = "Survival Rate") +
+  ggtitle("Survival Rates by last name initials - Titanic") +
+  scale_x_continuous(breaks = 1:8, labels = group_labels)
+
+
+# Apply the function to create a new column "Group" in Lusitania
+lusitania$Group <- sapply(lusitania$Family_name, assign_group)
+
+# Create a new column "Survived_binary" and populate it with binary values based on "Survived" column for Lusitania
+lusitania$Survived_binary <- ifelse(lusitania$Survived %in% c("yes"), 1, ifelse(lusitania$Survived %in% c("no"), 0, NA))
+
+# Calculate survival rates by group for Lusitania
+survival_rates2 <- aggregate(Survived_binary ~ Group, data = lusitania, FUN = mean)
+
+# Create a bar plot to visualize survival rates for Lusitania
+ggplot(survival_rates2, aes(x = Group, y = Survived_binary)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(x = "Group", y = "Survival Rate") +
+  ggtitle("Survival Rates by last name initials - Lusitania") +
+  scale_x_continuous(breaks = 1:8, labels = group_labels)
 
 
 

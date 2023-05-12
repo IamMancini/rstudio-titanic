@@ -25,6 +25,7 @@ ggplot(titanic, aes(x = Age)) +
   geom_histogram(binwidth = 5) +
   labs(title = "Age Distribution of Passengers on the Titanic",
        x = "Age (years)", y = "Count")
+#Most passengers are around 20 years old
 
 #histogram of age distribution in lusitania dataset
 ggplot(lusitania, aes(x = Age)) +

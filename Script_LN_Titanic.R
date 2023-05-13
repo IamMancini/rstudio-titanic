@@ -17,7 +17,7 @@ original_titanic <- read.csv(url_Titanic)
 original_lusitania <- read.csv(url_RMS_Lusitania)
 
 
-
+#Create a function that cleans the Dataset Titanic
 clean_data_titanic <- function(original_titanic) {
   
   #Change sequence in Titanic
@@ -55,7 +55,7 @@ titanic <- clean_data_titanic(original_titanic)
 
 
 #---------------------------------------------------------------------
-
+#Create a function that cleans the dataset lusitania
 clean_data_lusitania <- function(original_lusitania) {
   
   #change the first column from Luistania to "PassengerId"
@@ -131,15 +131,37 @@ lusitania <- clean_data_lusitania(original_lusitania)
 
 #Hypothesis 1 - Survival rate in relation to gender and class:
 
+#1. Step - To start, its important to know, how many people were female and how many were male on both ships
 
-#1. create a subset for titanic and lusitania dataset and only inlclude the variables of interest
+# Calculate the percentage of males and females on Lusitania
+lusitania_gender <- lusitania %>%
+  group_by(Sex) %>%
+  summarize(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100, Ship = "Lusitania")
 
-titanic_subset <- titanic[, c("Sex", "Survived", "Ticket_class")]
-lusitania_subset <- lusitania[, c("Sex", "Survived", "Ticket_class")]
+# Calculate the percentage of males and females on Titanic
+titanic_gender <- titanic %>%
+  group_by(Sex) %>%
+  summarize(count = n()) %>%
+  mutate(percentage = count / sum(count) * 100, Ship = "Titanic")
+
+# Combine the gender data from both ships
+combined_gender <- bind_rows(lusitania_gender, titanic_gender)
+
+# Plot the percentage of males and females on both ships
+ggplot(combined_gender, aes(x = Ship, y = percentage, fill = Sex)) +
+  geom_bar(stat = "identity", position = "fill") +
+  geom_text(aes(label = paste0(round(percentage), "%")), 
+            position = position_fill(vjust = 0.5), 
+            color = "white", size = 4, fontface = "bold") +
+  labs(title = "Percentage of Males and Females on Lusitania and Titanic",
+       x = "Ship", y = "Percentage") +
+  scale_fill_manual(values = c("#0072b2", "#d55e00"), name = "Sex") +
+  theme_minimal()
 
 
 
-#2. Calculate survival rates for each combination of gender and passenger class
+#2. Step -  Calculate the survival rates for each combination of gender and passenger class
 
 
 #Summary statistics for titanic

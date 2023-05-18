@@ -161,6 +161,7 @@ ggplot(combined_gender, aes(x = Ship, y = percentage, fill = Sex)) +
 
 
 
+
 #2. Step -  Calculate the survival rates for each combination of gender and passenger class
 
 
@@ -213,6 +214,76 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
        x = "Sex", y = "Number of passengers") +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "bottom")
+
+
+#2. Step -  Influence of the different ticket classes on the survival rate of passengers and whether their gender made a difference
+
+# Filter data for each ticket class
+class_1_data <- combined_summary[combined_summary$Ticket_class == "1", ]
+class_2_data <- combined_summary[combined_summary$Ticket_class == "2", ]
+class_3_data <- combined_summary[combined_summary$Ticket_class == "3", ]
+class_4_data <- combined_summary[combined_summary$Ticket_class == "4", ]
+
+# Plot for Ticket Class 1
+plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+            position = position_dodge(width = 0.9), vjust = -1.5) +
+  labs(title = "Ticket Class 1 - Survival rate of passengers",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom") +
+  coord_cartesian(ylim = c(0, 200))
+
+# Plot for Ticket Class 2
+plot_class_2 <- ggplot(class_2_data, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+            position = position_dodge(width = 0.9), vjust = -1.5) +
+  labs(title = "Ticket Class 2 - Survival rate of passengers",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom") +
+  coord_cartesian(ylim = c(0, 200))
+
+# Plot for Ticket Class 3
+plot_class_3 <- ggplot(class_3_data, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+            position = position_dodge(width = 0.9), vjust = -1.5) +
+  labs(title = "Ticket Class 3 - Survival rate of passengers",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom") +
+  coord_cartesian(ylim = c(0, 350))
+
+# Plot for Ticket Class 4
+plot_class_4 <- ggplot(class_4_data, aes(x = Sex, y = n, fill = Survived)) +
+  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+  facet_grid(rows = vars(dataset)) +
+  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+            position = position_dodge(width = 0.9), vjust = -1.5) +
+  labs(title = "Ticket Class 4 - Survival rate of passengers",
+       x = "Sex", y = "Number of passengers") +
+  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+        legend.position = "bottom") +
+  coord_cartesian(ylim = c(0, 450))
+
+# Display the individual plots
+plot_class_1
+plot_class_2
+plot_class_3
+plot_class_4
+
+
+
 
 #Bar-chart only with number of passengers 
 ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +

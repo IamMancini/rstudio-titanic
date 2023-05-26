@@ -6,6 +6,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 library(stringr)
+library(tidyverse)
 
 #Create URL for dataset
 url_Titanic <- "https://raw.githubusercontent.com/IamMancini/rstudio-titanic/main/train.csv"
@@ -128,10 +129,73 @@ lusitania <- clean_data_lusitania(original_lusitania)
 
 #------------------------------------------------------------
 
-initial_counts <- table(substr(lusitania$Family_name, 1, 1), lusitania$Group)
+# Calculate survival rates
+titanic_survival_rate <- mean(ifelse(titanic$Survived == "yes", 1, 0))
+lusitania_survival_rate <- mean(ifelse(lusitania$Survived == "yes", 1, 0))
 
-# Print the counts for each initial in each group
-print(initial_counts)
+# Print survival rates
+cat("Titanic survival rate:", titanic_survival_rate, "\n")
+cat("Lusitania survival rate:", lusitania_survival_rate, "\n")
+
+# Create a bar chart comparing the survival rates of both ships
+survival_rates <- data.frame(Ship = c("Titanic", "Lusitania"), Survival_Rate = c(titanic_survival_rate, lusitania_survival_rate))
+ggplot(survival_rates, aes(x = Ship, y = Survival_Rate, fill = Ship)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("lightblue", "lightgreen")) +
+  ggtitle("Survival Rate Comparison") +
+  xlab("Ship") +
+  ylab("Survival Rate")
+
+ggplot(survival_rates, aes(x = Ship, y = Survival_Rate * 100, fill = Ship)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = c("lightblue", "lightgreen")) +
+  ggtitle("Survival Rate Comparison") +
+  xlab("Ship") +
+  ylab("Survival Rate (%)")
+
+# Calculate percentage of survivors and non-survivors
+titanic_survivors <- sum(titanic$Survived == "yes")
+titanic_non_survivors <- sum(titanic$Survived == "no")
+lusitania_survivors <- sum(lusitania$Survived == "yes")
+lusitania_non_survivors <- sum(lusitania$Survived == "no")
+
+titanic_survival_percent <- titanic_survivors / nrow(titanic) * 100
+titanic_non_survival_percent <- titanic_non_survivors / nrow(titanic) * 100
+lusitania_survival_percent <- lusitania_survivors / nrow(lusitania) * 100
+lusitania_non_survival_percent <- lusitania_non_survivors / nrow(lusitania) * 100
+# Print survival rates and percentages
+cat("Titanic survival rate:", titanic_survival_rate, "\n")
+cat("Titanic survivors:", titanic_survivors, "(", round(titanic_survival_percent, 2), "%)", "\n")
+cat("Titanic non-survivors:", titanic_non_survivors, "(", round(titanic_non_survival_percent, 2), "%)", "\n")
+
+cat("Lusitania survival rate:", lusitania_survival_rate, "\n")
+cat("Lusitania survivors:", lusitania_survivors, "(", round(lusitania_survival_percent, 2), "%)", "\n")
+cat("Lusitania non-survivors:", lusitania_non_survivors, "(", round(lusitania_non_survival_percent, 2), "%)", "\n")
+
+# Create a data frame with the survival data
+titanic_pie <- data.frame(Status = c("Survivors", "Non-survivors"), Percent = c(titanic_survival_percent, titanic_non_survival_percent))
+
+# Create a pie chart of the survival data
+ggplot(titanic_pie, aes(x = "", y = Percent, fill = Status)) + 
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0) +
+  ggtitle("Titanic Survival Status") +
+  scale_fill_manual(values = c("lightblue", "lightgreen")) +
+  theme_void() +
+  geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
+
+# Create a data frame with the survival data
+lusitania_pie <- data.frame(Status = c("Survivors", "Non-survivors"), Percent = c(lusitania_survival_percent, lusitania_non_survival_percent))
+
+# Create a pie chart of the survival data
+ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) + 
+  geom_bar(width = 1, stat = "identity") +
+  coord_polar("y", start=0) +
+  ggtitle("Lusitania Survival Status") +
+  scale_fill_manual(values = c("lightblue", "lightgreen")) +
+  theme_void() +
+  geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
+
 
 
 # -----------------------------------------------------------
@@ -177,7 +241,7 @@ group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, 
 
 # Create a bar plot to visualize survival rates for Titanic
 ggplot(survival_rates1, aes(x = Group, y = Survived_binary)) +
-  geom_bar(stat = "identity", fill = "blue") +
+  geom_bar(stat = "identity", fill = "lightblue") +
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by last name initials - Titanic") +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
@@ -194,7 +258,138 @@ survival_rates2 <- aggregate(Survived_binary ~ Group, data = lusitania, FUN = me
 
 # Create a bar plot to visualize survival rates for Lusitania
 ggplot(survival_rates2, aes(x = Group, y = Survived_binary)) +
-  geom_bar(stat = "identity", fill = "blue") +
+  geom_bar(stat = "identity", fill = "lightblue") +
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by last name initials - Lusitania") +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
+
+#-------------------------GROUP AND CLASS
+
+# Calculate survival rates by group and ticket class for Titanic
+survival_rates_titanic <- titanic %>%
+  group_by(Group, Ticket_class) %>%
+  summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+
+# Create a bar plot to visualize survival rates for Titanic by group and ticket class
+ggplot(survival_rates_titanic, aes(x = Group, y = Survival_Rate, fill = factor(Ticket_class))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Group", y = "Survival Rate") +
+  ggtitle("Survival Rates by Last Name Initials and Ticket Class - Titanic") +
+  scale_x_continuous(breaks = 1:8, labels = group_labels) +
+  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
+  theme_minimal()
+
+
+# Calculate survival rates by group and ticket class for Lusitania
+survival_rates_lusitania <- lusitania %>%
+  group_by(Group, Ticket_class) %>%
+  summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+
+# Create a bar plot to visualize survival rates for Lusitania by group and ticket class
+ggplot(survival_rates_lusitania, aes(x = Group, y = Survival_Rate, fill = factor(Ticket_class))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Group", y = "Survival Rate") +
+  ggtitle("Survival Rates by Last Name Initials and Ticket Class - Lusitania") +
+  scale_x_continuous(breaks = 1:8, labels = group_labels) +
+  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
+  theme_minimal()
+
+#-------------PREDICTION--1-----------------------------
+
+# Convert "Survived" column to factor
+titanic$Survived <- factor(titanic$Survived, levels = c("no", "yes"))
+
+# Split the data into training and testing sets
+set.seed(123)  # for reproducibility
+train_indices <- sample(1:nrow(titanic), 0.9 * nrow(titanic))
+train_data <- titanic[train_indices, ]
+test_data <- titanic[-train_indices, ]
+
+# Perform logistic regression
+model <- glm(Survived ~ Sex + Ticket_class, data = train_data, family = binomial())
+summary(model)
+
+# Make predictions on test data
+test_data$predicted <- predict(model, newdata = test_data, type = "response")
+test_data$predicted_class <- ifelse(test_data$predicted > 0.5, "yes", "no")
+
+# Evaluate the model
+accuracy <- mean((test_data$predicted > 0.5) == (test_data$Survived == "yes"))
+cat("Accuracy:", accuracy, "\n")
+
+# Create a scatter plot of predicted probabilities
+ggplot(test_data, aes(x = Sex, y = Ticket_class, color = predicted > 0.5)) +
+  geom_point() +
+  scale_color_manual(values = c("blue", "red"), labels = c("Survived", "Did not survive")) +
+  labs(title = "Logistic Regression Predictions",
+       x = "Sex",
+       y = "Ticket_class")
+
+#-----
+
+# Sort the predicted probabilities and corresponding actual outcomes
+sorted_data <- test_data[order(-test_data$predicted), ]
+sorted_outcomes <- sorted_data$Survived
+
+# Calculate True Positive Rate (Sensitivity) and False Positive Rate (1 - Specificity)
+tp_rate <- cumsum(sorted_outcomes == "yes") / sum(sorted_outcomes == "yes")
+fp_rate <- cumsum(sorted_outcomes == "no") / sum(sorted_outcomes == "no")
+
+# Plot the ROC curve
+plot(fp_rate, tp_rate, type = "l", main = "ROC Curve", xlab = "False Positive Rate", ylab = "True Positive Rate")
+
+#-------------------------PREDICTION2------------
+
+# Convert Survived, Ticket_class, and Sex to factors
+titanic$Survived <- as.factor(titanic$Survived)
+titanic$Ticket_class <- as.factor(titanic$Ticket_class)
+titanic$Sex <- as.factor(titanic$Sex)
+
+set.seed(123)  # Set a random seed for reproducibility
+train_indices <- sample(1:nrow(titanic), nrow(titanic) * 0.9)
+train_data <- titanic[train_indices, ]
+test_data <- titanic[-train_indices, ]
+
+# Train the logistic regression model
+logistic_model <- glm(Survived ~ Ticket_class + Sex, data = train_data, family = binomial)
+
+# Print the summary of the model
+summary(logistic_model)
+
+# Make predictions on the test set
+test_predictions <- predict(logistic_model, newdata = test_data, type = "response")
+
+# Convert predicted probabilities to class labels
+#predicted_classes <- ifelse(test_predictions > 0.5, "Yes", "No")
+
+predicted_classes <- ifelse(test_predictions > 0.5, levels(test_data$Survived)[2], levels(test_data$Survived)[1])
+
+
+# Compare predicted classes with the actual values
+comparison <- data.frame(Actual = test_data$Survived, Predicted = predicted_classes)
+
+# View the comparison
+head(comparison)
+
+
+
+# Create a confusion matrix
+confusion_matrix <- table(Actual = test_data$Survived, Predicted = predicted_classes)
+
+# Plot the confusion matrix
+confusion_matrix_plot <- ggplot(data = as.data.frame(confusion_matrix), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
+  geom_tile(color = "white") +
+  labs(title = "Confusion Matrix", x = "Actual", y = "Predicted", fill = "Predicted") +
+  scale_fill_manual(values = c("No" = "lightblue", "Yes" = "lightgreen")) +
+  geom_text(aes(label = as.character(confusion_matrix)), color = "black", size = 15) +
+  theme_minimal()
+
+# Display the plot
+print(confusion_matrix_plot)
+
+# Calculate accuracy
+accuracy <- sum(comparison$Actual == comparison$Predicted) / nrow(comparison)
+
+# Print the accuracy
+print(paste("Accuracy:", accuracy))
+

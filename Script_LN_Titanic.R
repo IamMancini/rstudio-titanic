@@ -423,14 +423,14 @@ ggplot(titanic, aes(x = Survived, fill = Survived)) +
   geom_bar() +
   labs(title = "Survival Rate of Passengers on the Titanic",
        x = "Survived", y = "Count") +
-  scale_fill_manual(values = c("no" = "red", "yes" = "green"))
+  scale_fill_manual(values = c("no" = "#D55E00", "yes" = "#009E73"))
 
 # bar chart of survival rate in lusitania dataset
 ggplot(lusitania, aes(x = Survived, fill = Survived)) +
   geom_bar() +
   labs(title = "Survival Rate of Passengers on the Lusitania",
        x = "Survived", y = "Count") +
-  scale_fill_manual(values = c("no" = "red", "yes" = "green"))
+  scale_fill_manual(values = c("no" = "#D55E00", "yes" = "#009E73"))
 
 ###############################################################################
 
@@ -451,7 +451,7 @@ ggplot(data.frame(Ship = c("Titanic", "Lusitania"),
   geom_bar(stat = "identity") +
   labs(title = "Survival Rate Comparison between Titanic and Lusitania",
        x = "", y = "Survival Rate (%)") +
-  scale_fill_manual(values = c("Titanic" = "red", "Lusitania" = "green"))
+  scale_fill_manual(values = c("Titanic" = "#ABDBD9", "Lusitania" = "#6F63A0"))
 
 ###############################################################################
 
@@ -460,13 +460,13 @@ titanic_survivors <- subset(titanic, Survived == "yes")
 titanic_non_survivors <- subset(titanic, Survived == "no")
 
 ggplot(titanic_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "green", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Titanic Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
 
 ggplot(titanic_non_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "red", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Titanic Non-Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
@@ -479,13 +479,13 @@ lusitania_survivors <- subset(lusitania, Survived == "yes")
 lusitania_non_survivors <- subset(lusitania, Survived == "no")
 
 ggplot(lusitania_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "green", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Lusitania Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
 
 ggplot(lusitania_non_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "red", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Lusitania Non-Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
@@ -543,11 +543,11 @@ combined_survival_rate_age <- bind_rows(
   lusitania_survival_rate_age %>% mutate(Ship = "Lusitania")
 )
 
-# plot survival rate by age group for both ships
 ggplot(combined_survival_rate_age, aes(x = age_group, y = survival_rate, fill = Ship)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Survival Rate by Age Group Comparison between Titanic and Lusitania",
        x = "Age Group", y = "Survival Rate (%)", fill = "Ship") +
+  scale_fill_manual(values = c("#6F63A0","#ABDBD9")) +
   theme(legend.position = "bottom")
 
 
@@ -565,7 +565,7 @@ ggplot(combined_survival_rate_age, aes(x = age_group, y = survival_rate, fill = 
 
 #------------------------------------------------------------------------------------------------------
 
-#Hypothesis 4 - :
+# Hypothesis Survival Rate
 
 # Calculate survival rates
 titanic_survival_rate <- mean(ifelse(titanic$Survived == "yes", 1, 0))
@@ -584,7 +584,7 @@ ggplot(survival_rates, aes(x = Ship, y = Survival_Rate, fill = Ship)) +
   xlab("Ship") +
   ylab("Survival Rate")
 
-# Calculate percentage of survivors and non-survivors
+# Calculate percentage of survivors
 titanic_survivors <- sum(titanic$Survived == "yes")
 titanic_non_survivors <- sum(titanic$Survived == "no")
 lusitania_survivors <- sum(lusitania$Survived == "yes")
@@ -594,6 +594,7 @@ titanic_survival_percent <- titanic_survivors / nrow(titanic) * 100
 titanic_non_survival_percent <- titanic_non_survivors / nrow(titanic) * 100
 lusitania_survival_percent <- lusitania_survivors / nrow(lusitania) * 100
 lusitania_non_survival_percent <- lusitania_non_survivors / nrow(lusitania) * 100
+
 # Print survival rates and percentages
 cat("Titanic survival rate:", titanic_survival_rate, "\n")
 cat("Titanic survivors:", titanic_survivors, "(", round(titanic_survival_percent, 2), "%)", "\n")
@@ -627,7 +628,9 @@ ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) +
   theme_void() +
   geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
-#------------------------------------------------------------
+#---------------------------------------------------------------------------------------------
+
+# Hypothesis family name first letter
 
 # Create a function to assign group based on the first letter of family name
 assign_group <- function(name) {
@@ -659,7 +662,7 @@ assign_group <- function(name) {
 # Apply the function to create a new column "Group" in Titanic
 titanic$Group <- sapply(titanic$Family_name, assign_group)
 
-# Create a new column "Survived_binary" and populate it with binary values based on "Survived" column for Titanic
+# Create a new column "Survived_binary" for Titanic
 titanic$Survived_binary <- ifelse(titanic$Survived %in% c("yes"), 1, ifelse(titanic$Survived %in% c("no"), 0, NA))
 
 # Calculate survival rates by group for Titanic
@@ -679,7 +682,7 @@ ggplot(survival_rates1, aes(x = Group, y = Survived_binary)) +
 # Apply the function to create a new column "Group" in Lusitania
 lusitania$Group <- sapply(lusitania$Family_name, assign_group)
 
-# Create a new column "Survived_binary" and populate it with binary values based on "Survived" column for Lusitania
+# Create a new column "Survived_binary" for Lusitania
 lusitania$Survived_binary <- ifelse(lusitania$Survived %in% c("yes"), 1, ifelse(lusitania$Survived %in% c("no"), 0, NA))
 
 # Calculate survival rates by group for Lusitania
@@ -693,4 +696,34 @@ ggplot(survival_rates2, aes(x = Group, y = Survived_binary)) +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
 
 
+# Ticket class added to calculation
+
+# Calculate survival rates by group and ticket class for Titanic
+survival_rates_titanic <- titanic %>%
+  group_by(Group, Ticket_class) %>%
+  summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+
+# Create a bar plot to visualize survival rates for Titanic by group and ticket class
+ggplot(survival_rates_titanic, aes(x = Group, y = Survival_Rate, fill = factor(Ticket_class))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Group", y = "Survival Rate") +
+  ggtitle("Survival Rates by Last Name Initials and Ticket Class - Titanic") +
+  scale_x_continuous(breaks = 1:8, labels = group_labels) +
+  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
+  theme_minimal()
+
+
+# Calculate survival rates by group and ticket class for Lusitania
+survival_rates_lusitania <- lusitania %>%
+  group_by(Group, Ticket_class) %>%
+  summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+
+# Create a bar plot to visualize survival rates for Lusitania by group and ticket class
+ggplot(survival_rates_lusitania, aes(x = Group, y = Survival_Rate, fill = factor(Ticket_class))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Group", y = "Survival Rate") +
+  ggtitle("Survival Rates by Last Name Initials and Ticket Class - Lusitania") +
+  scale_x_continuous(breaks = 1:8, labels = group_labels) +
+  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
+  theme_minimal()
 

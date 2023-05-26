@@ -120,7 +120,7 @@ server <- function(input, output) {
         y = "Count"
       ) +
       scale_fill_manual(
-        values = c("#0073C2FF", "#FC4E07FF"),
+        values = c("#E69F00", "#0072B2"),
         labels = c("Female", "Male")
       ) +
       theme_minimal()
@@ -144,7 +144,7 @@ server <- function(input, output) {
         y = "Survival Rate (%)"
       ) +
       scale_fill_manual(
-        values = c("#0073C2FF", "#FC4E07FF"),
+        values = c("#E69F00", "#0072B2"),
         labels = c("Female", "Male")
       ) +
       theme_minimal()

@@ -442,14 +442,14 @@ ggplot(titanic, aes(x = Survived, fill = Survived)) +
   geom_bar() +
   labs(title = "Survival Rate of Passengers on the Titanic",
        x = "Survived", y = "Count") +
-  scale_fill_manual(values = c("no" = "red", "yes" = "green"))
+  scale_fill_manual(values = c("no" = "#D55E00", "yes" = "#009E73"))
 
 # bar chart of survival rate in lusitania dataset
 ggplot(lusitania, aes(x = Survived, fill = Survived)) +
   geom_bar() +
   labs(title = "Survival Rate of Passengers on the Lusitania",
        x = "Survived", y = "Count") +
-  scale_fill_manual(values = c("no" = "red", "yes" = "green"))
+  scale_fill_manual(values = c("no" = "#D55E00", "yes" = "#009E73"))
 
 ###############################################################################
 
@@ -470,7 +470,7 @@ ggplot(data.frame(Ship = c("Titanic", "Lusitania"),
   geom_bar(stat = "identity") +
   labs(title = "Survival Rate Comparison between Titanic and Lusitania",
        x = "", y = "Survival Rate (%)") +
-  scale_fill_manual(values = c("Titanic" = "red", "Lusitania" = "green"))
+  scale_fill_manual(values = c("Titanic" = "#ABDBD9", "Lusitania" = "#6F63A0"))
 
 ###############################################################################
 
@@ -479,13 +479,13 @@ titanic_survivors <- subset(titanic, Survived == "yes")
 titanic_non_survivors <- subset(titanic, Survived == "no")
 
 ggplot(titanic_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "green", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Titanic Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
 
 ggplot(titanic_non_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "red", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Titanic Non-Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
@@ -498,13 +498,13 @@ lusitania_survivors <- subset(lusitania, Survived == "yes")
 lusitania_non_survivors <- subset(lusitania, Survived == "no")
 
 ggplot(lusitania_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "green", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Lusitania Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
 
 ggplot(lusitania_non_survivors, aes(x = Age)) +
-  geom_histogram(binwidth = 5, fill = "red", alpha = 0.5) +
+  geom_histogram(binwidth = 5, alpha = 0.5) +
   ggtitle("Age Distribution of Lusitania Non-Survivors") +
   xlab("Age (years)") + ylab("Count") +
   theme_bw()
@@ -562,11 +562,11 @@ combined_survival_rate_age <- bind_rows(
   lusitania_survival_rate_age %>% mutate(Ship = "Lusitania")
 )
 
-# plot survival rate by age group for both ships
 ggplot(combined_survival_rate_age, aes(x = age_group, y = survival_rate, fill = Ship)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Survival Rate by Age Group Comparison between Titanic and Lusitania",
        x = "Age Group", y = "Survival Rate (%)", fill = "Ship") +
+  scale_fill_manual(values = c("#6F63A0","#ABDBD9")) +
   theme(legend.position = "bottom")
 
 

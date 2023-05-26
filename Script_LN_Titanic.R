@@ -156,7 +156,7 @@ ggplot(combined_gender, aes(x = Ship, y = percentage, fill = Sex)) +
             color = "white", size = 4, fontface = "bold") +
   labs(title = "Percentage of Males and Females on Lusitania and Titanic",
        x = "Ship", y = "Percentage") +
-  scale_fill_manual(values = c("#0072b2", "#d55e00"), name = "Sex") +
+  scale_fill_manual(values = c("#0072B2", "#E69F00"), name = "Sex") +
   theme_minimal()
 
 
@@ -194,26 +194,28 @@ summary_combined$Ticket_class <- as.integer(summary_combined$Ticket_class)
 titanic$Ticket_class <- as.character(titanic$Ticket_class)
 lusitania$Ticket_class <- as.character(lusitania$Ticket_class)
 
+
 combined <- bind_rows(titanic %>% mutate(dataset = "Titanic"), 
                       lusitania %>% mutate(dataset = "Lusitania"))
 
 combined_summary <- combined %>%
-  filter(!Ticket_class %in% "Stowaway") %>%
   group_by(dataset, Sex, Ticket_class, Survived) %>%
   summarize(n = n()) %>%
   mutate(pct_survived = n / sum(n) * 100)
 
-#3. Visualize survival rates with bar-chart
+# Visualize survival rates with bar-chart
 ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
   facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived",
+                    labels = c("No", "Yes")) +
   geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
             position = position_dodge(width = 0.9), vjust = -1.0) +
   labs(title = "Survival rate of passengers on Titanic and Lusitania",
        x = "Sex", y = "Number of passengers") +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "bottom")
+
 
 
 #2. Step -  Influence of the different ticket classes on the survival rate of passengers and whether their gender made a difference
@@ -228,7 +230,7 @@ class_4_data <- combined_summary[combined_summary$Ticket_class == "4", ]
 plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
   facet_grid(rows = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
   geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
             position = position_dodge(width = 0.9), vjust = -1.5) +
   labs(title = "Ticket Class 1 - Survival rate of passengers",
@@ -241,7 +243,7 @@ plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
 plot_class_2 <- ggplot(class_2_data, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
   facet_grid(rows = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
   geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
             position = position_dodge(width = 0.9), vjust = -1.5) +
   labs(title = "Ticket Class 2 - Survival rate of passengers",
@@ -254,7 +256,7 @@ plot_class_2 <- ggplot(class_2_data, aes(x = Sex, y = n, fill = Survived)) +
 plot_class_3 <- ggplot(class_3_data, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
   facet_grid(rows = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
   geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
             position = position_dodge(width = 0.9), vjust = -1.5) +
   labs(title = "Ticket Class 3 - Survival rate of passengers",
@@ -267,7 +269,7 @@ plot_class_3 <- ggplot(class_3_data, aes(x = Sex, y = n, fill = Survived)) +
 plot_class_4 <- ggplot(class_4_data, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
   facet_grid(rows = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
   geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
             position = position_dodge(width = 0.9), vjust = -1.5) +
   labs(title = "Ticket Class 4 - Survival rate of passengers",
@@ -276,20 +278,18 @@ plot_class_4 <- ggplot(class_4_data, aes(x = Sex, y = n, fill = Survived)) +
         legend.position = "bottom") +
   coord_cartesian(ylim = c(0, 450))
 
-# Display the individual plots
+# Display the individual plots for all the Ticket_classes
 plot_class_1
 plot_class_2
 plot_class_3
 plot_class_4
 
 
-
-
 #Bar-chart only with number of passengers 
 ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
   facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
   geom_text(aes(label = n),
             position = position_dodge(width = 0.9), vjust = -1.0) +
   ylim(0, 600) +
@@ -298,18 +298,7 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "bottom")
 
-#Bar-chart only in percentage // Problem -> y-Axis doesnt match that the data is shown in percentage and some labels arent visible
-ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
-  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
-  facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
-  geom_text(aes(label = paste0(round(pct_survived), "%")),
-            position = position_dodge(width = 0.9), vjust = -1.0) +
-  ylim(0, 600) +
-  labs(title = "Survival rate of passengers on Titanic and Lusitania",
-       x = "Sex", y = "Percentage of passengers") +
-  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
-        legend.position = "bottom")
+
 
 
 
@@ -327,7 +316,7 @@ ggplot(ship_totals, aes(x = dataset, y = total_passengers, fill = dataset)) +
        x = "Ship", y = "Total passengers") +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "none") +
-  scale_fill_manual(values = c("#0072b2", "#d55e00")) +
+  scale_fill_manual(values = c("#6f63a0", "#ABDBD9")) +
   geom_text(aes(label = total_passengers), position = position_stack(vjust = 0.5),
             color = "white", fontface = "bold", size = 3.5)
 
@@ -350,14 +339,12 @@ ggplot(grouped_summary, aes(x = dataset, y = count, fill = Survived)) +
   geom_text(aes(label = count), position = position_dodge(width = 0.9), 
             vjust = -0.5) +
   facet_grid(rows = vars(Sex)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived",
+  scale_fill_manual(values = c("#d55e00", "#009E73"), name = "Survived",
                     labels = c("No", "Yes")) +
   labs(title = "Survival of passengers on Titanic and Lusitania by gender",
        x = "Dataset", y = "Number of passengers") +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "bottom")
-
-#2b. Pie-chart for the same plot
 
 
 
@@ -384,19 +371,13 @@ combined_summary <- bind_rows(
 ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "stack", stat = "identity") +
   facet_grid(rows = vars(dataset)) +
-  scale_fill_manual(values = c("#d55e00", "#0072b2"), name = "Survived") +
+  scale_fill_manual(values = c("#d55e00", "#009E73"), name = "Survived") +
   geom_text(aes(label = paste0(round(pct_survived), "%")),
             position = position_stack(vjust = 0.5)) +
   labs(title = "Survival rate of passengers on Titanic and Lusitania by gender",
        x = "Sex", y = "Number of passengers") +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "bottom")
-
-
-
-
-
-#Differences between the passenger class on both ships and how it effected their survival rate
 
 
 

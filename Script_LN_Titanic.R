@@ -1,6 +1,3 @@
-#Dataset Titanic https://www.kaggle.com/c/titanic/data
-#Dataset RMS Lusitania Complete Passanger Manifest
-
 #loading packages
 library(dplyr)
 library(tidyr)
@@ -127,7 +124,7 @@ lusitania <- clean_data_lusitania(original_lusitania)
 
 
 
-#------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 #Hypothesis 1 - Survival rate in relation to gender and class:
 
@@ -156,13 +153,13 @@ ggplot(combined_gender, aes(x = Ship, y = percentage, fill = Sex)) +
             color = "white", size = 4, fontface = "bold") +
   labs(title = "Percentage of Males and Females on Lusitania and Titanic",
        x = "Ship", y = "Percentage") +
-  scale_fill_manual(values = c("#0072B2", "#E69F00"), name = "Sex") +
+  scale_fill_manual(values = c("#E69F00", "#0072B2"), name = "Sex") +
   theme_minimal()
 
+################################################################################
 
 
-
-#2. Step -  Calculate the survival rates for each combination of gender and passenger class
+#2. Step -  Preperation for the folowing plots
 
 
 #Summary statistics for titanic
@@ -203,19 +200,7 @@ combined_summary <- combined %>%
   summarize(n = n()) %>%
   mutate(pct_survived = n / sum(n) * 100)
 
-# Visualize survival rates with bar-chart
-ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
-  geom_bar(position = "dodge", stat = "identity", width = 0.9) +
-  facet_grid(rows = vars(Ticket_class), cols = vars(dataset)) +
-  scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived",
-                    labels = c("No", "Yes")) +
-  geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
-            position = position_dodge(width = 0.9), vjust = -1.0) +
-  labs(title = "Survival rate of passengers on Titanic and Lusitania",
-       x = "Sex", y = "Number of passengers") +
-  theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
-        legend.position = "bottom")
-
+################################################################################
 
 
 #2. Step -  Influence of the different ticket classes on the survival rate of passengers and whether their gender made a difference
@@ -285,6 +270,10 @@ plot_class_3
 plot_class_4
 
 
+
+################################################################################
+
+
 #Bar-chart only with number of passengers 
 ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
   geom_bar(position = "dodge", stat = "identity", width = 0.9) +
@@ -299,7 +288,7 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
         legend.position = "bottom")
 
 
-
+################################################################################
 
 
 
@@ -321,9 +310,9 @@ ggplot(ship_totals, aes(x = dataset, y = total_passengers, fill = dataset)) +
             color = "white", fontface = "bold", size = 3.5)
 
 
+################################################################################
 
-
-#2a. Create a grouped bar chart to compare the number of survivors and non-survivors by gender and dataset
+#2. Create a grouped bar chart to compare the number of survivors and non-survivors by gender and dataset
 
 grouped_summary <- titanic %>%
   group_by(Sex, Survived) %>%
@@ -346,7 +335,7 @@ ggplot(grouped_summary, aes(x = dataset, y = count, fill = Survived)) +
   theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
         legend.position = "bottom")
 
-
+################################################################################
 
 #3. Differences between the genders on both ships and how it effected their survival rate
 
@@ -382,7 +371,7 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
 
 
 
-#------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 #Hypothesis 2 - :
 
@@ -563,7 +552,7 @@ ggplot(combined_survival_rate_age, aes(x = age_group, y = survival_rate, fill = 
 
 
 
-#------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Hypothesis Survival Rate
 
@@ -628,7 +617,7 @@ ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) +
   theme_void() +
   geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
-#---------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 # Hypothesis family name first letter
 

@@ -702,3 +702,110 @@ ggplot(survival_rates_lusitania, aes(x = Group, y = Survival_Rate, fill = factor
   scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
   theme_minimal()
 
+
+#-------------------------PREDICTION TITANIC--------------------------------------------------
+
+# Convert Survived, Ticket_class, and Sex to factors
+titanic$Survived <- as.factor(titanic$Survived)
+titanic$Ticket_class <- as.factor(titanic$Ticket_class)
+titanic$Sex <- as.factor(titanic$Sex)
+
+set.seed(123)  # Set a random seed for reproducibility
+train_indices <- sample(1:nrow(titanic), nrow(titanic) * 0.9)
+train_data <- titanic[train_indices, ]
+test_data <- titanic[-train_indices, ]
+
+# Train the logistic regression model
+logistic_model <- glm(Survived ~ Ticket_class + Sex, data = train_data, family = binomial)
+
+# Print the summary of the model
+summary(logistic_model)
+
+# Make predictions on the test set
+test_predictions <- predict(logistic_model, newdata = test_data, type = "response")
+
+# Convert predicted probabilities to class labels
+predicted_classes <- ifelse(test_predictions > 0.5, levels(test_data$Survived)[2], levels(test_data$Survived)[1])
+
+
+# Compare predicted classes with the actual values
+comparison <- data.frame(Actual = test_data$Survived, Predicted = predicted_classes)
+
+# View the comparison
+head(comparison)
+
+
+
+# Create a confusion matrix
+confusion_matrix <- table(Actual = test_data$Survived, Predicted = predicted_classes)
+
+# Plot the confusion matrix
+confusion_matrix_plot <- ggplot(data = as.data.frame(confusion_matrix), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
+  geom_tile(color = "white") +
+  labs(title = "Confusion Matrix - Titanic", x = "Actual", y = "Predicted", fill = "Predicted") +
+  scale_fill_manual(values = c("No" = "lightblue", "Yes" = "lightgreen")) +
+  geom_text(aes(label = as.character(confusion_matrix)), color = "black", size = 15) +
+  theme_minimal()
+
+# Display the plot
+print(confusion_matrix_plot)
+
+# Calculate accuracy
+accuracy <- sum(comparison$Actual == comparison$Predicted) / nrow(comparison)
+
+# Print the accuracy
+print(paste("Accuracy:", accuracy))
+
+#---------------------PREDICTION LUSITANIA----------------------------------------------------
+
+# Convert Survived, Ticket_class, and Sex to factors
+lusitania$Survived <- as.factor(lusitania$Survived)
+lusitania$Ticket_class <- as.factor(lusitania$Ticket_class)
+lusitania$Sex <- as.factor(lusitania$Sex)
+
+# Filter lusitania dataset to include only Ticket_class values 1, 2, and 3
+lusitania <- lusitania[lusitania$Ticket_class %in% c(1, 2, 3), ]
+
+set.seed(123)  # Set a random seed for reproducibility
+train_indices <- sample(1:nrow(lusitania), nrow(lusitania) * 0.9)
+train_data <- lusitania[train_indices, ]
+test_data <- lusitania[-train_indices, ]
+
+# Train the logistic regression model
+logistic_model <- glm(Survived ~ Ticket_class + Sex, data = train_data, family = binomial)
+
+# Print the summary of the model
+summary(logistic_model)
+
+# Make predictions on the test set
+test_predictions <- predict(logistic_model, newdata = test_data, type = "response")
+
+# Convert predicted probabilities to class labels
+predicted_classes <- ifelse(test_predictions > 0.5, levels(test_data$Survived)[2], levels(test_data$Survived)[1])
+
+# Compare predicted classes with the actual values
+comparison <- data.frame(Actual = test_data$Survived, Predicted = predicted_classes)
+
+# View the comparison
+head(comparison)
+
+# Create a confusion matrix
+confusion_matrix <- table(Actual = test_data$Survived, Predicted = predicted_classes)
+
+# Plot the confusion matrix
+confusion_matrix_plot <- ggplot(data = as.data.frame(confusion_matrix), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
+  geom_tile(color = "white") +
+  labs(title = "Confusion Matrix - Lusitania", x = "Actual", y = "Predicted", fill = "Predicted") +
+  scale_fill_manual(values = c("No" = "lightblue", "Yes" = "lightgreen")) +
+  geom_text(aes(label = as.character(confusion_matrix)), color = "black", size = 15) +
+  theme_minimal()
+
+# Display the plot
+print(confusion_matrix_plot)
+
+# Calculate accuracy
+accuracy <- sum(comparison$Actual == comparison$Predicted) / nrow(comparison)
+
+# Print the accuracy
+print(paste("Accuracy:", accuracy))
+

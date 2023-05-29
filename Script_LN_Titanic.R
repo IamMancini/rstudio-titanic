@@ -554,7 +554,7 @@ cat("Lusitania survival rate:", lusitania_survival_rate, "\n")
 survival_rates <- data.frame(Ship = c("Titanic", "Lusitania"), Survival_Rate = c(titanic_survival_rate, lusitania_survival_rate))
 ggplot(survival_rates, aes(x = Ship, y = Survival_Rate, fill = Ship)) + 
   geom_bar(stat = "identity") +
-  scale_fill_manual(values = c("blue", "red")) +
+  scale_fill_manual(values = c("#6f63a0", "#ABDBD9")) +
   ggtitle("Survival Rate Comparison") +
   xlab("Ship") +
   ylab("Survival Rate")
@@ -587,7 +587,7 @@ ggplot(titanic_pie, aes(x = "", y = Percent, fill = Status)) +
   geom_bar(width = 1, stat = "identity") +
   coord_polar("y", start=0) +
   ggtitle("Titanic Survival Status") +
-  scale_fill_manual(values = c("darkgreen", "darkred")) +
+  scale_fill_manual(values = c("#D55E00", "#009E73")) +
   theme_void() +
   geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
@@ -599,7 +599,7 @@ ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) +
   geom_bar(width = 1, stat = "identity") +
   coord_polar("y", start=0) +
   ggtitle("Lusitania Survival Status") +
-  scale_fill_manual(values = c("darkgreen", "darkred")) +
+  scale_fill_manual(values = c("#D55E00", "#009E73")) +
   theme_void() +
   geom_text(aes(label = paste(round(Percent), "%")), position = position_stack(vjust = 0.5))
 
@@ -648,7 +648,7 @@ group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, 
 
 # Create a bar plot to visualize survival rates for Titanic
 ggplot(survival_rates1, aes(x = Group, y = Survived_binary)) +
-  geom_bar(stat = "identity", fill = "blue") +
+  geom_bar(stat = "identity", fill = "lightblue") +
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by last name initials - Titanic") +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
@@ -665,7 +665,7 @@ survival_rates2 <- aggregate(Survived_binary ~ Group, data = lusitania, FUN = me
 
 # Create a bar plot to visualize survival rates for Lusitania
 ggplot(survival_rates2, aes(x = Group, y = Survived_binary)) +
-  geom_bar(stat = "identity", fill = "blue") +
+  geom_bar(stat = "identity", fill = "lightblue") +
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by last name initials - Lusitania") +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
@@ -684,7 +684,7 @@ ggplot(survival_rates_titanic, aes(x = Group, y = Survival_Rate, fill = factor(T
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by Last Name Initials and Ticket Class - Titanic") +
   scale_x_continuous(breaks = 1:8, labels = group_labels) +
-  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
+  scale_fill_manual(values = c("#EE6A50", "#FF7F00", "#F08080", "#ffe4c4")) +
   theme_minimal()
 
 
@@ -699,7 +699,7 @@ ggplot(survival_rates_lusitania, aes(x = Group, y = Survival_Rate, fill = factor
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by Last Name Initials and Ticket Class - Lusitania") +
   scale_x_continuous(breaks = 1:8, labels = group_labels) +
-  scale_fill_manual(values = c("#E69F00", "#56B4E9", "#009E73", "#F0E442")) +
+  scale_fill_manual(values = c("#EE6A50", "#FF7F00", "#F08080", "#ffe4c4")) +
   theme_minimal()
 
 
@@ -711,50 +711,50 @@ titanic$Ticket_class <- as.factor(titanic$Ticket_class)
 titanic$Sex <- as.factor(titanic$Sex)
 
 set.seed(123)  # Set a random seed for reproducibility
-train_indices <- sample(1:nrow(titanic), nrow(titanic) * 0.9)
-train_data <- titanic[train_indices, ]
-test_data <- titanic[-train_indices, ]
+train_indices_t <- sample(1:nrow(titanic), nrow(titanic) * 0.9)
+train_data_t <- titanic[train_indices_t, ]
+test_data_t <- titanic[-train_indices_t, ]
 
 # Train the logistic regression model
-logistic_model <- glm(Survived ~ Ticket_class + Sex, data = train_data, family = binomial)
+logistic_model_t <- glm(Survived ~ Ticket_class + Sex, data = train_data_t, family = binomial)
 
 # Print the summary of the model
-summary(logistic_model)
+summary(logistic_model_t)
 
 # Make predictions on the test set
-test_predictions <- predict(logistic_model, newdata = test_data, type = "response")
+test_predictions_t <- predict(logistic_model_t, newdata = test_data_t, type = "response")
 
 # Convert predicted probabilities to class labels
-predicted_classes <- ifelse(test_predictions > 0.5, levels(test_data$Survived)[2], levels(test_data$Survived)[1])
+predicted_classes_t <- ifelse(test_predictions_t > 0.5, levels(test_data_t$Survived)[2], levels(test_data_t$Survived)[1])
 
 
 # Compare predicted classes with the actual values
-comparison <- data.frame(Actual = test_data$Survived, Predicted = predicted_classes)
+comparison_t <- data.frame(Actual = test_data_t$Survived, Predicted = predicted_classes_t)
 
 # View the comparison
-head(comparison)
+head(comparison_t)
 
 
 
 # Create a confusion matrix
-confusion_matrix <- table(Actual = test_data$Survived, Predicted = predicted_classes)
+confusion_matrix_t <- table(Actual = test_data_t$Survived, Predicted = predicted_classes_t)
 
 # Plot the confusion matrix
-confusion_matrix_plot <- ggplot(data = as.data.frame(confusion_matrix), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
+confusion_matrix_plot_t <- ggplot(data = as.data.frame(confusion_matrix_t), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
   geom_tile(color = "white") +
   labs(title = "Confusion Matrix - Titanic", x = "Actual", y = "Predicted", fill = "Predicted") +
   scale_fill_manual(values = c("No" = "lightblue", "Yes" = "lightgreen")) +
-  geom_text(aes(label = as.character(confusion_matrix)), color = "black", size = 15) +
+  geom_text(aes(label = as.character(confusion_matrix_t)), color = "black", size = 15) +
   theme_minimal()
 
 # Display the plot
-print(confusion_matrix_plot)
+print(confusion_matrix_plot_t)
 
 # Calculate accuracy
-accuracy <- sum(comparison$Actual == comparison$Predicted) / nrow(comparison)
+accuracy_t <- sum(comparison_t$Actual == comparison_t$Predicted) / nrow(comparison_t)
 
 # Print the accuracy
-print(paste("Accuracy:", accuracy))
+print(paste("Accuracy:", accuracy_t))
 
 #---------------------PREDICTION LUSITANIA----------------------------------------------------
 
@@ -767,45 +767,45 @@ lusitania$Sex <- as.factor(lusitania$Sex)
 lusitania <- lusitania[lusitania$Ticket_class %in% c(1, 2, 3), ]
 
 set.seed(123)  # Set a random seed for reproducibility
-train_indices <- sample(1:nrow(lusitania), nrow(lusitania) * 0.9)
-train_data <- lusitania[train_indices, ]
-test_data <- lusitania[-train_indices, ]
+train_indices_l <- sample(1:nrow(lusitania), nrow(lusitania) * 0.9)
+train_data_l <- lusitania[train_indices_l, ]
+test_data_l <- lusitania[-train_indices_l, ]
 
 # Train the logistic regression model
-logistic_model <- glm(Survived ~ Ticket_class + Sex, data = train_data, family = binomial)
+logistic_model_l <- glm(Survived ~ Ticket_class + Sex, data = train_data_l, family = binomial)
 
 # Print the summary of the model
-summary(logistic_model)
+summary(logistic_model_l)
 
 # Make predictions on the test set
-test_predictions <- predict(logistic_model, newdata = test_data, type = "response")
+test_predictions_l <- predict(logistic_model_l, newdata = test_data_l, type = "response")
 
 # Convert predicted probabilities to class labels
-predicted_classes <- ifelse(test_predictions > 0.5, levels(test_data$Survived)[2], levels(test_data$Survived)[1])
+predicted_classes_l <- ifelse(test_predictions_l > 0.5, levels(test_data_l$Survived)[2], levels(test_data_l$Survived)[1])
 
 # Compare predicted classes with the actual values
-comparison <- data.frame(Actual = test_data$Survived, Predicted = predicted_classes)
+comparison_l <- data.frame(Actual = test_data_l$Survived, Predicted = predicted_classes_l)
 
 # View the comparison
-head(comparison)
+head(comparison_l)
 
 # Create a confusion matrix
-confusion_matrix <- table(Actual = test_data$Survived, Predicted = predicted_classes)
+confusion_matrix_l <- table(Actual = test_data_l$Survived, Predicted = predicted_classes_l)
 
 # Plot the confusion matrix
-confusion_matrix_plot <- ggplot(data = as.data.frame(confusion_matrix), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
+confusion_matrix_plot_l <- ggplot(data = as.data.frame(confusion_matrix_l), aes(x = Actual, y = Predicted, fill = as.factor(Predicted))) +
   geom_tile(color = "white") +
   labs(title = "Confusion Matrix - Lusitania", x = "Actual", y = "Predicted", fill = "Predicted") +
   scale_fill_manual(values = c("No" = "lightblue", "Yes" = "lightgreen")) +
-  geom_text(aes(label = as.character(confusion_matrix)), color = "black", size = 15) +
+  geom_text(aes(label = as.character(confusion_matrix_l)), color = "black", size = 15) +
   theme_minimal()
 
 # Display the plot
-print(confusion_matrix_plot)
+print(confusion_matrix_plot_l)
 
 # Calculate accuracy
-accuracy <- sum(comparison$Actual == comparison$Predicted) / nrow(comparison)
+accuracy_l <- sum(comparison_l$Actual == comparison_l$Predicted) / nrow(comparison_l)
 
 # Print the accuracy
-print(paste("Accuracy:", accuracy))
+print(paste("Accuracy:", accuracy_l))
 

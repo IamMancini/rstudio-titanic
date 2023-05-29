@@ -552,12 +552,12 @@ cat("Lusitania survival rate:", lusitania_survival_rate, "\n")
 
 # Create a bar chart comparing the survival rates of both ships
 survival_rates <- data.frame(Ship = c("Titanic", "Lusitania"), Survival_Rate = c(titanic_survival_rate, lusitania_survival_rate))
-ggplot(survival_rates, aes(x = Ship, y = Survival_Rate, fill = Ship)) + 
+ggplot(survival_rates, aes(x = Ship, y = Survival_Rate * 100, fill = Ship)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("#6f63a0", "#ABDBD9")) +
   ggtitle("Survival Rate Comparison") +
   xlab("Ship") +
-  ylab("Survival Rate")
+  ylab("Survival Rate (%)")
 
 # Calculate percentage of survivors
 titanic_survivors <- sum(titanic$Survived == "yes")
@@ -648,7 +648,7 @@ group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, 
 
 # Create a bar plot to visualize survival rates for Titanic
 ggplot(survival_rates1, aes(x = Group, y = Survived_binary)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
+  geom_bar(stat = "identity", fill = "#C3447A") +
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by last name initials - Titanic") +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
@@ -665,7 +665,7 @@ survival_rates2 <- aggregate(Survived_binary ~ Group, data = lusitania, FUN = me
 
 # Create a bar plot to visualize survival rates for Lusitania
 ggplot(survival_rates2, aes(x = Group, y = Survived_binary)) +
-  geom_bar(stat = "identity", fill = "lightblue") +
+  geom_bar(stat = "identity", fill = "#C3447A") +
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by last name initials - Lusitania") +
   scale_x_continuous(breaks = 1:8, labels = group_labels)
@@ -684,7 +684,7 @@ ggplot(survival_rates_titanic, aes(x = Group, y = Survival_Rate, fill = factor(T
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by Last Name Initials and Ticket Class - Titanic") +
   scale_x_continuous(breaks = 1:8, labels = group_labels) +
-  scale_fill_manual(values = c("#EE6A50", "#FF7F00", "#F08080", "#ffe4c4")) +
+  scale_fill_manual(values = c("#C80064", "#d7658b", "#e4bcad", "#a86464")) +
   theme_minimal()
 
 
@@ -699,7 +699,7 @@ ggplot(survival_rates_lusitania, aes(x = Group, y = Survival_Rate, fill = factor
   labs(x = "Group", y = "Survival Rate") +
   ggtitle("Survival Rates by Last Name Initials and Ticket Class - Lusitania") +
   scale_x_continuous(breaks = 1:8, labels = group_labels) +
-  scale_fill_manual(values = c("#EE6A50", "#FF7F00", "#F08080", "#ffe4c4")) +
+  scale_fill_manual(values = c("#C80064", "#d7658b", "#e4bcad", "#a86464")) +
   theme_minimal()
 
 

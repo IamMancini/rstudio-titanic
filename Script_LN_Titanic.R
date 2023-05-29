@@ -126,7 +126,7 @@ lusitania <- clean_data_lusitania(original_lusitania)
 
 #-------------------------------------------------------------------------------
 
-#Hypothesis 1 - Survival rate in relation to gender and class:
+#Hypothesis - survival rate in relation to gender and class:
 
 #1. Step - To start, its important to know, how many people were female and how many were male on both ships
 
@@ -290,8 +290,6 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
 
 ################################################################################
 
-
-
 #1. Create a new data frame with the total number of passengers for each ship
 ship_totals <- rbind(
   titanic %>% summarise(dataset = "Titanic", total_passengers = n()),
@@ -373,7 +371,7 @@ ggplot(combined_summary, aes(x = Sex, y = n, fill = Survived)) +
 
 #-------------------------------------------------------------------------------
 
-#Hypothesis 2 - :
+#Hypothesis - age and survival:
 
 #histogram of age distribution in titanic dataset
 ggplot(titanic, aes(x = Age)) +
@@ -542,19 +540,7 @@ ggplot(combined_survival_rate_age, aes(x = age_group, y = survival_rate, fill = 
 
 #------------------------------------------------------------------------------------------------------
 
-#Hypothesis 3 - :
-
-
-
-
-
-
-
-
-
-#-------------------------------------------------------------------------------
-
-# Hypothesis Survival Rate
+# Hypothesis - survival rate
 
 # Calculate survival rates
 titanic_survival_rate <- mean(ifelse(titanic$Survived == "yes", 1, 0))
@@ -619,7 +605,7 @@ ggplot(lusitania_pie, aes(x = "", y = Percent, fill = Status)) +
 
 #-------------------------------------------------------------------------------
 
-# Hypothesis family name first letter
+# Hypothesis - family name first letter
 
 # Create a function to assign group based on the first letter of family name
 assign_group <- function(name) {

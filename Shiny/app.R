@@ -378,6 +378,9 @@ server <- function(input, output) {
     
     # Filter data for each ticket class
     class_1_data <- combined_summary[combined_summary$Ticket_class == "1", ]
+    class_2_data <- combined_summary[combined_summary$Ticket_class == "2", ]
+    class_3_data <- combined_summary[combined_summary$Ticket_class == "3", ]
+    class_4_data <- combined_summary[combined_summary$Ticket_class == "4", ]
 
     # Plot for Ticket Class 1
     plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
@@ -435,15 +438,293 @@ server <- function(input, output) {
   })
   
   output$plot22 <- renderPlot({
+    #Summary statistics for titanic
+    titanic_summary <- titanic %>%
+      group_by(Ticket_class, Sex, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    #Summary statistics for Lusitania
+    lusitania_summary <- lusitania %>%
+      group_by(Ticket_class, Sex, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    # Convert Ticket_class to a character variable in titanic_summary
+    titanic_summary$Ticket_class <- as.character(titanic_summary$Ticket_class)
+    
+    # Combine titanic_summary and lusitania_summary
+    summary_combined <- bind_rows(titanic_summary, lusitania_summary, .id = "Ship")
+    
+    # Convert Ticket_class back to an integer variable
+    summary_combined$Ticket_class <- as.integer(summary_combined$Ticket_class)
+    
+    # Combine the datasets and remove the "stowaway"
+    titanic$Ticket_class <- as.character(titanic$Ticket_class)
+    lusitania$Ticket_class <- as.character(lusitania$Ticket_class)
+    
+    
+    combined <- bind_rows(titanic %>% mutate(dataset = "Titanic"), 
+                          lusitania %>% mutate(dataset = "Lusitania"))
+    
+    combined_summary <- combined %>%
+      group_by(dataset, Sex, Ticket_class, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    #2. Step -  Influence of the different ticket classes on the survival rate of passengers and whether their gender made a difference
+    
+    # Filter data for each ticket class
+    class_1_data <- combined_summary[combined_summary$Ticket_class == "1", ]
+    class_2_data <- combined_summary[combined_summary$Ticket_class == "2", ]
+    class_3_data <- combined_summary[combined_summary$Ticket_class == "3", ]
+    class_4_data <- combined_summary[combined_summary$Ticket_class == "4", ]
+    
+    # Plot for Ticket Class 1
+    plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 1 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 200))
+    # Plot for Ticket Class 2
+    plot_class_2 <- ggplot(class_2_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 2 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 200))
+    
+    # Plot for Ticket Class 3
+    plot_class_3 <- ggplot(class_3_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 3 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 350))
+    
+    # Plot for Ticket Class 4
+    plot_class_4 <- ggplot(class_4_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 4 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 450))
     plot_class_2
     
   })
   
   output$plot23 <- renderPlot({
+    #Summary statistics for titanic
+    titanic_summary <- titanic %>%
+      group_by(Ticket_class, Sex, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    #Summary statistics for Lusitania
+    lusitania_summary <- lusitania %>%
+      group_by(Ticket_class, Sex, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    # Convert Ticket_class to a character variable in titanic_summary
+    titanic_summary$Ticket_class <- as.character(titanic_summary$Ticket_class)
+    
+    # Combine titanic_summary and lusitania_summary
+    summary_combined <- bind_rows(titanic_summary, lusitania_summary, .id = "Ship")
+    
+    # Convert Ticket_class back to an integer variable
+    summary_combined$Ticket_class <- as.integer(summary_combined$Ticket_class)
+    
+    # Combine the datasets and remove the "stowaway"
+    titanic$Ticket_class <- as.character(titanic$Ticket_class)
+    lusitania$Ticket_class <- as.character(lusitania$Ticket_class)
+    
+    
+    combined <- bind_rows(titanic %>% mutate(dataset = "Titanic"), 
+                          lusitania %>% mutate(dataset = "Lusitania"))
+    
+    combined_summary <- combined %>%
+      group_by(dataset, Sex, Ticket_class, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    #2. Step -  Influence of the different ticket classes on the survival rate of passengers and whether their gender made a difference
+    
+    # Filter data for each ticket class
+    class_1_data <- combined_summary[combined_summary$Ticket_class == "1", ]
+    class_2_data <- combined_summary[combined_summary$Ticket_class == "2", ]
+    class_3_data <- combined_summary[combined_summary$Ticket_class == "3", ]
+    class_4_data <- combined_summary[combined_summary$Ticket_class == "4", ]
+    
+    # Plot for Ticket Class 1
+    plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 1 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 200))
+    
+    # Plot for Ticket Class 2
+    plot_class_2 <- ggplot(class_2_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 2 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 200))
+    
+    # Plot for Ticket Class 3
+    plot_class_3 <- ggplot(class_3_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 3 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 350))
+    
+    # Plot for Ticket Class 4
+    plot_class_4 <- ggplot(class_4_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 4 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 450))
     plot_class_3
   })
   
   output$plot24 <- renderPlot({
+    #Summary statistics for titanic
+    titanic_summary <- titanic %>%
+      group_by(Ticket_class, Sex, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    #Summary statistics for Lusitania
+    lusitania_summary <- lusitania %>%
+      group_by(Ticket_class, Sex, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    # Convert Ticket_class to a character variable in titanic_summary
+    titanic_summary$Ticket_class <- as.character(titanic_summary$Ticket_class)
+    
+    # Combine titanic_summary and lusitania_summary
+    summary_combined <- bind_rows(titanic_summary, lusitania_summary, .id = "Ship")
+    
+    # Convert Ticket_class back to an integer variable
+    summary_combined$Ticket_class <- as.integer(summary_combined$Ticket_class)
+    
+    # Combine the datasets and remove the "stowaway"
+    titanic$Ticket_class <- as.character(titanic$Ticket_class)
+    lusitania$Ticket_class <- as.character(lusitania$Ticket_class)
+    
+    
+    combined <- bind_rows(titanic %>% mutate(dataset = "Titanic"), 
+                          lusitania %>% mutate(dataset = "Lusitania"))
+    
+    combined_summary <- combined %>%
+      group_by(dataset, Sex, Ticket_class, Survived) %>%
+      summarize(n = n()) %>%
+      mutate(pct_survived = n / sum(n) * 100)
+    
+    #2. Step -  Influence of the different ticket classes on the survival rate of passengers and whether their gender made a difference
+    
+    # Filter data for each ticket class
+    class_1_data <- combined_summary[combined_summary$Ticket_class == "1", ]
+    class_2_data <- combined_summary[combined_summary$Ticket_class == "2", ]
+    class_3_data <- combined_summary[combined_summary$Ticket_class == "3", ]
+    class_4_data <- combined_summary[combined_summary$Ticket_class == "4", ]
+    
+    # Plot for Ticket Class 1
+    plot_class_1 <- ggplot(class_1_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 1 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 200))
+    # Plot for Ticket Class 2
+    plot_class_2 <- ggplot(class_2_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 2 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 200))
+    
+    # Plot for Ticket Class 3
+    plot_class_3 <- ggplot(class_3_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 3 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 350))
+    
+    # Plot for Ticket Class 4
+    plot_class_4 <- ggplot(class_4_data, aes(x = Sex, y = n, fill = Survived)) +
+      geom_bar(position = "dodge", stat = "identity", width = 0.9) +
+      facet_grid(rows = vars(dataset)) +
+      scale_fill_manual(values = c("#D55E00", "#009E73"), name = "Survived") +
+      geom_text(aes(label = paste0(n, " (", round(pct_survived), "%)")),
+                position = position_dodge(width = 0.9), vjust = -1.5) +
+      labs(title = "Ticket Class 4 - Survival rate of passengers",
+           x = "Sex", y = "Number of passengers") +
+      theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+            legend.position = "bottom") +
+      coord_cartesian(ylim = c(0, 450))
+    
     plot_class_4
   })
   
@@ -546,7 +827,6 @@ server <- function(input, output) {
       }
     }
     
-    
     # Apply the function to create a new column "Group" in Titanic
     titanic$Group <- sapply(titanic$Family_name, assign_group)
     
@@ -561,7 +841,7 @@ server <- function(input, output) {
     
     # Create a bar plot to visualize survival rates for Titanic
     ggplot(survival_rates1, aes(x = Group, y = Survived_binary)) +
-      geom_bar(stat = "identity", fill = "lightblue") +
+      geom_bar(stat = "identity", fill = "#C3447A") +
       labs(x = "Group", y = "Survival Rate") +
       ggtitle("Survival Rates by last name initials - Titanic") +
       scale_x_continuous(breaks = 1:8, labels = group_labels)
@@ -569,6 +849,46 @@ server <- function(input, output) {
   })
   
   output$plot41 <- renderPlot({
+    
+    # Create a function to assign group based on the first letter of family name
+    assign_group <- function(name) {
+      first_letter <- substr(name, 1, 1)  # Get the first letter of the name
+      first_letter <- toupper(first_letter)  # Convert it to uppercase
+      
+      if (first_letter %in% c("A", "B", "C")) {
+        return(1)  # Group 1
+      } else if (first_letter %in% c("D", "E", "F")) {
+        return(2)  # Group 2
+      } else if (first_letter %in% c("G", "H", "I")) {
+        return(3)  # Group 3
+      } else if (first_letter %in% c("J", "K", "L")) {
+        return(4)  # Group 4
+      } else if (first_letter %in% c("M", "N", "O")) {
+        return(5)  # Group 5
+      } else if (first_letter %in% c("P", "Q", "R")) {
+        return(6)  # Group 6
+      } else if (first_letter %in% c("S", "T", "U")) {
+        return(7)  # Group 7
+      } else if (first_letter %in% c("V", "W", "X", "Y", "Z")) {
+        return(8)  # Group 8
+      } else {
+        return(NA)  # For names that don't fall into any group
+      }
+    }
+    
+    # Apply the function to create a new column "Group" in Titanic
+    titanic$Group <- sapply(titanic$Family_name, assign_group)
+    
+    # Create a new column "Survived_binary" for Titanic
+    titanic$Survived_binary <- ifelse(titanic$Survived %in% c("yes"), 1, ifelse(titanic$Survived %in% c("no"), 0, NA))
+    
+    # Calculate survival rates by group for Titanic
+    survival_rates1 <- aggregate(Survived_binary ~ Group, data = titanic, FUN = mean)
+    
+    # Create a vector of labels for each group
+    group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, R", "S, T, U", "V, W, X, Y, Z")
+    
+
     # Apply the function to create a new column "Group" in Lusitania
     lusitania$Group <- sapply(lusitania$Family_name, assign_group)
     
@@ -580,32 +900,160 @@ server <- function(input, output) {
     
     # Create a bar plot to visualize survival rates for Lusitania
     ggplot(survival_rates2, aes(x = Group, y = Survived_binary)) +
-      geom_bar(stat = "identity", fill = "lightblue") +
+      geom_bar(stat = "identity", fill = "#C3447A") +
       labs(x = "Group", y = "Survival Rate") +
       ggtitle("Survival Rates by last name initials - Lusitania") +
       scale_x_continuous(breaks = 1:8, labels = group_labels)
+
   })
   
   output$plot42 <- renderPlot({
+    
+    # Hypothesis - family name first letter
+    
+    # Create a function to assign group based on the first letter of family name
+    assign_group <- function(name) {
+      first_letter <- substr(name, 1, 1)  # Get the first letter of the name
+      first_letter <- toupper(first_letter)  # Convert it to uppercase
+      
+      if (first_letter %in% c("A", "B", "C")) {
+        return(1)  # Group 1
+      } else if (first_letter %in% c("D", "E", "F")) {
+        return(2)  # Group 2
+      } else if (first_letter %in% c("G", "H", "I")) {
+        return(3)  # Group 3
+      } else if (first_letter %in% c("J", "K", "L")) {
+        return(4)  # Group 4
+      } else if (first_letter %in% c("M", "N", "O")) {
+        return(5)  # Group 5
+      } else if (first_letter %in% c("P", "Q", "R")) {
+        return(6)  # Group 6
+      } else if (first_letter %in% c("S", "T", "U")) {
+        return(7)  # Group 7
+      } else if (first_letter %in% c("V", "W", "X", "Y", "Z")) {
+        return(8)  # Group 8
+      } else {
+        return(NA)  # For names that don't fall into any group
+      }
+    }
+    
+    
+    # Apply the function to create a new column "Group" in Titanic
+    titanic$Group <- sapply(titanic$Family_name, assign_group)
+    
+    # Create a new column "Survived_binary" for Titanic
+    titanic$Survived_binary <- ifelse(titanic$Survived %in% c("yes"), 1, ifelse(titanic$Survived %in% c("no"), 0, NA))
+    
+    # Calculate survival rates by group for Titanic
+    survival_rates1 <- aggregate(Survived_binary ~ Group, data = titanic, FUN = mean)
+    
+    # Create a vector of labels for each group
+    group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, R", "S, T, U", "V, W, X, Y, Z")
+    
+    
+    # Apply the function to create a new column "Group" in Lusitania
+    lusitania$Group <- sapply(lusitania$Family_name, assign_group)
+    
+    # Create a new column "Survived_binary" for Lusitania
+    lusitania$Survived_binary <- ifelse(lusitania$Survived %in% c("yes"), 1, ifelse(lusitania$Survived %in% c("no"), 0, NA))
+    
+    # Calculate survival rates by group for Lusitania
+    survival_rates2 <- aggregate(Survived_binary ~ Group, data = lusitania, FUN = mean)
+    
+    # Ticket class added to calculation
+    
+    # Calculate survival rates by group and ticket class for Titanic
+    survival_rates_titanic <- titanic %>%
+      group_by(Group, Ticket_class) %>%
+      summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+    
     # Create a bar plot to visualize survival rates for Titanic by group and ticket class
     ggplot(survival_rates_titanic, aes(x = Group, y = Survival_Rate, fill = factor(Ticket_class))) +
       geom_bar(stat = "identity", position = "dodge") +
       labs(x = "Group", y = "Survival Rate") +
       ggtitle("Survival Rates by Last Name Initials and Ticket Class - Titanic") +
       scale_x_continuous(breaks = 1:8, labels = group_labels) +
-      scale_fill_manual(values = c("#EE6A50", "#FF7F00", "#F08080", "#ffe4c4")) +
+      scale_fill_manual(values = c("#C80064", "#d7658b", "#e4bcad", "#a86464")) +
       theme_minimal()
+
+    
   })
   
   output$plot43 <- renderPlot({
+    # Hypothesis - family name first letter
+    
+    # Create a function to assign group based on the first letter of family name
+    assign_group <- function(name) {
+      first_letter <- substr(name, 1, 1)  # Get the first letter of the name
+      first_letter <- toupper(first_letter)  # Convert it to uppercase
+      
+      if (first_letter %in% c("A", "B", "C")) {
+        return(1)  # Group 1
+      } else if (first_letter %in% c("D", "E", "F")) {
+        return(2)  # Group 2
+      } else if (first_letter %in% c("G", "H", "I")) {
+        return(3)  # Group 3
+      } else if (first_letter %in% c("J", "K", "L")) {
+        return(4)  # Group 4
+      } else if (first_letter %in% c("M", "N", "O")) {
+        return(5)  # Group 5
+      } else if (first_letter %in% c("P", "Q", "R")) {
+        return(6)  # Group 6
+      } else if (first_letter %in% c("S", "T", "U")) {
+        return(7)  # Group 7
+      } else if (first_letter %in% c("V", "W", "X", "Y", "Z")) {
+        return(8)  # Group 8
+      } else {
+        return(NA)  # For names that don't fall into any group
+      }
+    }
+    
+    
+    # Apply the function to create a new column "Group" in Titanic
+    titanic$Group <- sapply(titanic$Family_name, assign_group)
+    
+    # Create a new column "Survived_binary" for Titanic
+    titanic$Survived_binary <- ifelse(titanic$Survived %in% c("yes"), 1, ifelse(titanic$Survived %in% c("no"), 0, NA))
+    
+    # Calculate survival rates by group for Titanic
+    survival_rates1 <- aggregate(Survived_binary ~ Group, data = titanic, FUN = mean)
+    
+    # Create a vector of labels for each group
+    group_labels <- c("A, B, C", "D, E, F", "G, H, I", "J, K, L", "M, N, O", "P, Q, R", "S, T, U", "V, W, X, Y, Z")
+    
+    
+    # Apply the function to create a new column "Group" in Lusitania
+    lusitania$Group <- sapply(lusitania$Family_name, assign_group)
+    
+    # Create a new column "Survived_binary" for Lusitania
+    lusitania$Survived_binary <- ifelse(lusitania$Survived %in% c("yes"), 1, ifelse(lusitania$Survived %in% c("no"), 0, NA))
+    
+    # Calculate survival rates by group for Lusitania
+    survival_rates2 <- aggregate(Survived_binary ~ Group, data = lusitania, FUN = mean)
+    
+    
+    # Ticket class added to calculation
+    
+    # Calculate survival rates by group and ticket class for Titanic
+    survival_rates_titanic <- titanic %>%
+      group_by(Group, Ticket_class) %>%
+      summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+    
+    # Calculate survival rates by group and ticket class for Lusitania
+    survival_rates_lusitania <- lusitania %>%
+      group_by(Group, Ticket_class) %>%
+      summarize(Survival_Rate = mean(Survived_binary, na.rm = TRUE))
+    
     # Create a bar plot to visualize survival rates for Lusitania by group and ticket class
     ggplot(survival_rates_lusitania, aes(x = Group, y = Survival_Rate, fill = factor(Ticket_class))) +
       geom_bar(stat = "identity", position = "dodge") +
       labs(x = "Group", y = "Survival Rate") +
       ggtitle("Survival Rates by Last Name Initials and Ticket Class - Lusitania") +
       scale_x_continuous(breaks = 1:8, labels = group_labels) +
-      scale_fill_manual(values = c("#EE6A50", "#FF7F00", "#F08080", "#ffe4c4")) +
+      scale_fill_manual(values = c("#C80064", "#d7658b", "#e4bcad", "#a86464")) +
       theme_minimal()
+
+    
   })
   
   output$plot5 <- renderPlot({
